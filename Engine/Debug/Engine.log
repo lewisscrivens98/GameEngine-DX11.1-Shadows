@@ -1,0 +1,7 @@
+﻿  systemclass.cpp
+  main.cpp
+  graphicsclass.cpp
+e:\university files\year 2\computer games studio 2\term 2\assignment\engine\engine\graphicsclass.cpp(33): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
+  Generating Code...
+  Engine.vcxproj -> E:\University Files\Year 2\Computer Games Studio 2\Term 2\Assignment\Engine\Debug\Engine.exe
+  Engine.vcxproj -> E:\University Files\Year 2\Computer Games Studio 2\Term 2\Assignment\Engine\Debug\Engine.pdb (Full PDB)
