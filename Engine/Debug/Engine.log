@@ -1,7 +1,24 @@
-﻿  systemclass.cpp
+﻿  Timer.cpp
+  textureshaderclass.cpp
+  textureclass.cpp
+  systemclass.cpp
+  shadermanagerclass.cpp
+  PlayerController.cpp
+e:\university files\year 2\computer games studio 2\term 2\engine\engine\playercontroller.cpp(36): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
+  Movement.cpp
+  modelclass.cpp
   main.cpp
+  lightshaderclass.cpp
+  lightclass.cpp
+  inputclass.cpp
   graphicsclass.cpp
-e:\university files\year 2\computer games studio 2\term 2\assignment\engine\engine\graphicsclass.cpp(33): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
+e:\university files\year 2\computer games studio 2\term 2\engine\engine\graphicsclass.cpp(33): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
+  DDSTextureLoader.cpp
+  d3dclass.cpp
+  cameraclass.cpp
+  bumpmodelclass.cpp
+  bumpmapshaderclass.cpp
   Generating Code...
-  Engine.vcxproj -> E:\University Files\Year 2\Computer Games Studio 2\Term 2\Assignment\Engine\Debug\Engine.exe
-  Engine.vcxproj -> E:\University Files\Year 2\Computer Games Studio 2\Term 2\Assignment\Engine\Debug\Engine.pdb (Full PDB)
+bumpmapshaderclass.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+  Engine.vcxproj -> E:\University Files\Year 2\Computer Games Studio 2\Term 2\Engine\Debug\Engine.exe
+  Engine.vcxproj -> E:\University Files\Year 2\Computer Games Studio 2\Term 2\Engine\Debug\Engine.pdb (Full PDB)
