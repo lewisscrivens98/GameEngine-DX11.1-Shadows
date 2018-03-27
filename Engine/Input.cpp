@@ -207,14 +207,7 @@ void Input::ProcessInput()
 	m_mouseX += m_mouseState.lX;
 	m_mouseY += m_mouseState.lY;
 
-	if (m_mouseX > m_screenWidth)
-	{
-		m_mouseX = m_screenWidth;
-	}
-	if (m_mouseY > m_screenHeight)
-	{
-		m_mouseY = m_screenHeight;
-	}
+	// Code that used to be here is no longer needed as a method is used to keep the mouse in the centre of the screen instead.
 
 	return;
 }

@@ -3,7 +3,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "Movement.h"
 
-
 Movement::Movement()
 {
 	m_positionX = 0.0f;
@@ -299,10 +298,10 @@ void Movement::MoveDownward(bool keydown)
 
 void Movement::MoveMouse(int mouseChangeX, int mouseChangeY, float mouseSensitivity)//When the method is ran these variables must be passed to the method.
 {
-	if ((m_rotationX + (mouseChangeY * mouseSensitivity)) <= 90 || (m_rotationX + (mouseChangeY * mouseSensitivity)) >= -90)//Check that any added rotation doesnt exceed the boundries for X rotation.
+	m_rotationY += mouseChangeX * mouseSensitivity;//Set rotationX to rotationX + mouse change on the y axis.
+
+	if ((m_rotationX + (mouseChangeY * mouseSensitivity)) < 90 && (m_rotationX + (mouseChangeY * mouseSensitivity)) > -90)//Check that any added rotation doesnt exceed the boundries for X rotation.
 	{
 		m_rotationX += mouseChangeY * mouseSensitivity;//Set rotationX to rotationX + mouse change on the y axis, the smaller the mouse sensitivity the more it reduces the rotation.
 	}
-
-	m_rotationY += mouseChangeX * mouseSensitivity;//Set rotationX to rotationX + mouse change on the y axis.
 }
