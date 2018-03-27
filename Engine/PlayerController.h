@@ -1,8 +1,8 @@
 #ifndef _PLAYERCONTROLLER_H_
 #define _PLAYERCONTROLLER_H_
 
-#include "cameraclass.h" 
-#include "inputclass.h"
+#include "Camera.h" 
+#include "Input.h"
 #include "Timer.h"
 #include "Movement.h"
 
@@ -25,8 +25,8 @@ public:
 
 private:
 
-	CameraClass* m_camera;
-	InputClass* m_input;
+	Camera* m_camera;
+	Input* m_input;
 	Timer* m_timer;
 	Movement* m_movement;
 

@@ -33,7 +33,7 @@ bool PlayerController::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 	bool result;
 
 	// Create the camera object.
-	m_camera = new CameraClass;
+	m_camera = new Camera;
 	if (!m_camera)
 	{
 		return false;
@@ -41,7 +41,7 @@ bool PlayerController::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 
 	//m_camera->SetPosition(0.0f, 0.0f, -10.0f);
 
-	m_input = new InputClass;
+	m_input = new Input;
 	if (!m_input)
 	{
 		return false;
