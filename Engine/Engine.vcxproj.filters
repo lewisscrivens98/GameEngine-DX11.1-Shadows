@@ -111,6 +111,15 @@
     <ClInclude Include="Timer.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
+    <ClInclude Include="ShadowShader.h">
+      <Filter>Header Files\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthShader.h">
+      <Filter>Header Files\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTexture.h">
+      <Filter>Header Files\Graphics\Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BumpmapShader.cpp">
@@ -127,9 +136,6 @@
     </ClCompile>
     <ClCompile Include="BumpModel.cpp">
       <Filter>Source Files\Graphics\Models</Filter>
-    </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>Header Files\Graphics\Models</Filter>
     </ClCompile>
     <ClCompile Include="DDSTextureLoader.cpp">
       <Filter>Source Files\Graphics\Texture</Filter>
@@ -176,6 +182,18 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
+    <ClCompile Include="ShadowShader.cpp">
+      <Filter>Source Files\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files\Graphics\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthShader.cpp">
+      <Filter>Source Files\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTexture.cpp">
+      <Filter>Source Files\Graphics\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="bumpmap.ps">
@@ -197,5 +215,17 @@
       <Filter>Shader Files</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
+    <None Include="shadow.ps">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shadow.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="depth.ps">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="depth.vs">
+      <Filter>Shader Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

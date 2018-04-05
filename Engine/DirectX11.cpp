@@ -44,7 +44,6 @@ bool DirectX11::Initialize(int screenWidth, int screenHeight, bool vsync, HWND h
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	D3D11_RASTERIZER_DESC rasterDesc;
-	D3D11_VIEWPORT viewport;
 	float fieldOfView, screenAspect;
 
 
@@ -318,15 +317,15 @@ bool DirectX11::Initialize(int screenWidth, int screenHeight, bool vsync, HWND h
 	m_deviceContext->RSSetState(m_rasterState);
 	
 	// Setup the viewport for rendering.
-    viewport.Width = (float)screenWidth;
-    viewport.Height = (float)screenHeight;
-    viewport.MinDepth = 0.0f;
-    viewport.MaxDepth = 1.0f;
-    viewport.TopLeftX = 0.0f;
-    viewport.TopLeftY = 0.0f;
+    m_viewport.Width = (float)screenWidth;
+	m_viewport.Height = (float)screenHeight;
+	m_viewport.MinDepth = 0.0f;
+	m_viewport.MaxDepth = 1.0f;
+	m_viewport.TopLeftX = 0.0f;
+	m_viewport.TopLeftY = 0.0f;
 
 	// Create the viewport.
-    m_deviceContext->RSSetViewports(1, &viewport);
+    m_deviceContext->RSSetViewports(1, &m_viewport);
 
 	// Setup the projection matrix.
 	fieldOfView = (float)XM_PI / 4.0f;
@@ -343,7 +342,7 @@ bool DirectX11::Initialize(int screenWidth, int screenHeight, bool vsync, HWND h
 
 	//
 	// Create the viewport.
-	m_deviceContext->RSSetViewports(1, &viewport);
+	m_deviceContext->RSSetViewports(1, &m_viewport);
 
     return true;
 }
@@ -485,5 +484,22 @@ void DirectX11::GetVideoCardInfo(char* cardName, int& memory)
 {
 	strcpy_s(cardName, 128, m_videoCardDescription);
 	memory = m_videoCardMemory;
+	return;
+}
+
+void DirectX11::SetBackBufferRenderTarget()
+{
+	// Bind the render target view and depth stencil buffer to the output render pipeline.
+	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+
+	return;
+}
+
+
+void DirectX11::ResetViewport()
+{
+	// Set the viewport.
+	m_deviceContext->RSSetViewports(1, &m_viewport);
+
 	return;
 }

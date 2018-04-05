@@ -27,7 +27,6 @@ bool Model::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* texture
 {
 	bool result;
 
-
 	// Load in the model data,
 	result = LoadModel(modelFilename);
 	if (!result)
@@ -322,5 +321,20 @@ void Model::ReleaseModel()
 		m_model = 0;
 	}
 
+	return;
+}
+
+void Model::SetPosition(float posX, float posY, float posZ)
+{
+	m_position.x = posX;
+	m_position.y = posY;
+	m_position.z = posZ;
+}
+
+void Model::GetPosition(float& posX, float& posY, float& posZ)
+{
+	posX = m_position.x;
+	posY = m_position.y;
+	posZ = m_position.z;
 	return;
 }

@@ -1,9 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: Graphics.h
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef _GRAPHICSCLASS_H_
-#define _GRAPHICSCLASS_H_
-
+#ifndef _GRAPHICS_H_
+#define _GRAPHICS_H_
 
 ///////////////////////
 // MY CLASS INCLUDES //
@@ -14,15 +13,17 @@
 #include "Model.h"
 #include "BumpModel.h"
 #include "PlayerController.h"
-
+#include "RenderTexture.h"
 
 /////////////
 // GLOBALS //
 /////////////
 const bool FULL_SCREEN = true;
 const bool VSYNC_ENABLED = true;
-const float SCREEN_DEPTH = 3000.0f;
-const float SCREEN_NEAR = 0.1f;
+const float SCREEN_DEPTH = 500.0f;
+const float SCREEN_NEAR = 1.0f;
+const int SHADOWMAP_WIDTH = 2048;
+const int SHADOWMAP_HEIGHT = 2048;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +43,7 @@ public:
 private:
 
 	bool Render();
+	bool RenderTextures();
 
 private:
 
@@ -49,8 +51,10 @@ private:
 	ShaderManager* m_shaderManager;
 	Light* m_light;
 	Model* m_cube;
-	Model* m_skybox;
+	Model* m_ground;
 	PlayerController* m_playerController;
+	RenderTexture* m_renderTexture;
+	DepthShader* m_depthShader;
 };
 
 #endif

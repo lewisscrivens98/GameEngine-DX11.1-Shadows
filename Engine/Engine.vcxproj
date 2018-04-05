@@ -14,6 +14,7 @@
     <ClInclude Include="BumpmapShader.h" />
     <ClInclude Include="BumpModel.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="DepthShader.h" />
     <ClInclude Include="DirectX11.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Font.h" />
@@ -25,7 +26,9 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="PlayerController.h" />
+    <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="ShadowShader.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
@@ -36,6 +39,7 @@
     <ClCompile Include="BumpmapShader.cpp" />
     <ClCompile Include="BumpModel.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DepthShader.cpp" />
     <ClCompile Include="DirectX11.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Font.cpp" />
@@ -48,7 +52,9 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Movement.cpp" />
     <ClCompile Include="PlayerController.cpp" />
+    <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="ShadowShader.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -59,8 +65,12 @@
     <None Include="bumpmap.ps" />
     <None Include="bumpmap.vs" />
     <None Include="ClassDiagram.cd" />
+    <None Include="depth.ps" />
+    <None Include="depth.vs" />
     <None Include="light.ps" />
     <None Include="light.vs" />
+    <None Include="shadow.ps" />
+    <None Include="shadow.vs" />
     <None Include="texture.ps" />
     <None Include="texture.vs" />
   </ItemGroup>
