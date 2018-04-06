@@ -331,10 +331,9 @@ void Model::SetPosition(float posX, float posY, float posZ)
 	m_position.z = posZ;
 }
 
-void Model::GetPosition(float& posX, float& posY, float& posZ)
+// Return the models posiiton.
+void Model::GetPosition(XMFLOAT3& pos)
 {
-	posX = m_position.x;
-	posY = m_position.y;
-	posZ = m_position.z;
+	pos = m_position;
 	return;
 }

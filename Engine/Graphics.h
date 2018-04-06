@@ -1,3 +1,13 @@
+/////////////
+// GLOBALS //
+/////////////
+const bool FULL_SCREEN = true;
+const bool VSYNC_ENABLED = true;
+const float SCREEN_DEPTH = 100.0f;
+const float SCREEN_NEAR = 1.0f;
+const int SHADOWMAP_WIDTH = 1024;
+const int SHADOWMAP_HEIGHT = 1024;
+
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: Graphics.h
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,16 +24,6 @@
 #include "BumpModel.h"
 #include "PlayerController.h"
 #include "RenderTexture.h"
-
-/////////////
-// GLOBALS //
-/////////////
-const bool FULL_SCREEN = true;
-const bool VSYNC_ENABLED = true;
-const float SCREEN_DEPTH = 500.0f;
-const float SCREEN_NEAR = 1.0f;
-const int SHADOWMAP_WIDTH = 2048;
-const int SHADOWMAP_HEIGHT = 2048;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +42,7 @@ public:
 
 private:
 
+	bool HandleLightMovement();
 	bool Render();
 	bool RenderTextures();
 
@@ -55,6 +56,11 @@ private:
 	PlayerController* m_playerController;
 	RenderTexture* m_renderTexture;
 	DepthShader* m_depthShader;
+	
+public:
+
+	bool lightMovementSwitch;
+
 };
 
 #endif

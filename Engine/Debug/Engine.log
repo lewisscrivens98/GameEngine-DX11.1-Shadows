@@ -1,11 +1,4 @@
-﻿  main.cpp
-  System.cpp
-  Generating Code...
-  Compiling...
-  Graphics.cpp
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\graphics.cpp(34): warning C4316: 'DirectX11': object allocated on the heap may not be aligned 16
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\graphics.cpp(64): warning C4316: 'Light': object allocated on the heap may not be aligned 16
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\graphics.cpp(142): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
-  Generating Code...
+﻿  PlayerController.cpp
+e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\playercontroller.cpp(30): warning C4316: 'Camera': object allocated on the heap may not be aligned 16
   Engine.vcxproj -> E:\University Files\Year 2\Computer Games Studio 2\Term 2\GameEngine-DX11.1-Version2\Debug\Engine.exe
   Engine.vcxproj -> E:\University Files\Year 2\Computer Games Studio 2\Term 2\GameEngine-DX11.1-Version2\Debug\Engine.pdb (Full PDB)

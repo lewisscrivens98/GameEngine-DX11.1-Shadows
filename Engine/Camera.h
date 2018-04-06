@@ -8,8 +8,11 @@
 //////////////
 // INCLUDES //
 //////////////
+
 #include <DirectXMath.h> 
 using namespace DirectX;
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: Camera
 ////////////////////////////////////////////////////////////////////////////////
@@ -23,10 +26,8 @@ public:
 	void SetPosition(float, float, float);
 	void SetRotation(float, float, float);
 
-	void GetPosition(float&, float&, float&);
-
-	XMFLOAT3 GetPosition();
-	XMFLOAT3 GetRotation();
+	void GetPosition(XMFLOAT3&);
+	void GetRotation(XMFLOAT3&);
 
 	void Render();
 	void GetViewMatrix(XMMATRIX&);
@@ -38,8 +39,8 @@ public:
 	void GetReflectionViewMatrix(XMMATRIX&);
 
 private:
-	float m_positionX, m_positionY, m_positionZ;
-	float m_rotationX, m_rotationY, m_rotationZ;
+	XMFLOAT3 m_position;
+	XMFLOAT3 m_rotation;
 	XMMATRIX m_viewMatrix, m_baseViewMatrix, m_reflectionViewMatrix;
 };
 

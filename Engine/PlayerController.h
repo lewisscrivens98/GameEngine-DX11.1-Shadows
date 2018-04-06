@@ -16,10 +16,11 @@ public:
 	bool Initialize(HINSTANCE, HWND, int, int);
 	bool Frame();
 	bool HandleMovement(float);
+	bool HandleInteraction(float);
 	bool Render();
 
 	void GetCameraViewMatrix(XMMATRIX&);
-	void GetPlayerPosition(float&, float&, float&);
+	void GetPlayerPosition(XMFLOAT3&);
 
 	void Shutdown();
 
@@ -30,7 +31,12 @@ private:
 	Timer* m_timer;
 	Movement* m_movement;
 
-	float startX, startY, startZ, startRotX, startRotY, startRotZ;
+	bool keyReleased;
+	bool keyWaiting;
+
+public:
+	 
+	bool LightMovement;
 };
 
 #endif

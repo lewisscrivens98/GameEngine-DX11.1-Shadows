@@ -8,14 +8,6 @@ PlayerController::PlayerController()
 	m_input = 0;
 	m_timer = 0;
 	m_movement = 0;
-
-	// Starting rotation and positional values.
-	startX = 0.0f;
-	startY = 0.0f;
-	startZ = -10.0f;
-	startRotX = 0.0f;
-	startRotY = 0.0f;
-	startRotZ = 0.0f;
 }
 
 PlayerController::PlayerController(const PlayerController& other)
@@ -31,6 +23,8 @@ PlayerController::~PlayerController()
 bool PlayerController::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeight)
 {
 	bool result;
+
+	LightMovement = true;
 
 	// Create the camera object.
 	m_camera = new Camera;
@@ -55,6 +49,9 @@ bool PlayerController::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 		return false;
 	}
 
+	keyReleased = true;
+	keyWaiting = false;
+
 	// Create the timer object.
 	m_timer = new Timer;
 	if (!m_timer)
@@ -78,8 +75,8 @@ bool PlayerController::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 	}
 
 	// Set the initial position and rotation of the viewer.
-	m_movement->SetPosition(startX, startY, startZ);
-	m_movement->SetRotation(startRotX, startRotY, startRotZ);
+	m_movement->SetPosition(0.0f, 0.0f, -10.0f);
+	m_movement->SetRotation(0.0f, 0.0f, 0.0f);
 
 	return true;
 }
@@ -119,13 +116,13 @@ bool PlayerController::Frame()
 bool PlayerController::HandleMovement(float frameTime)
 {
 	bool keyDown;
-	float rotX, rotY, rotZ, posX, posY, posZ;// Positional and rotational values.
+	XMFLOAT3 rot, pos;
 	int mouseChangeX, mouseChangeY;
-	float movementSpeed = 1.0;// Used to affect movement speed easily.
 	float mouseSensitivity = 0.1f;// Used to affect mouseMovement speed easily.
 
-								  // Gets the mouseChange between frames for the X axis.
+	// Gets the mouseChange between frames for the X axis.
 	mouseChangeX = m_input->GetMouseXChange();
+
 	// Gets the mouseChange between frames for the Y axis.
 	mouseChangeY = m_input->GetMouseYChange();
 
@@ -134,39 +131,78 @@ bool PlayerController::HandleMovement(float frameTime)
 
 	// Handle the input.
 	keyDown = m_input->IsKeyDown(DIK_W);
-	m_movement->MoveForward(keyDown);
+	if (keyDown) m_movement->MoveForward(true);
 
 	keyDown = m_input->IsKeyDown(DIK_S);
-	m_movement->MoveBackward(keyDown);
+	if (keyDown) m_movement->MoveBackward(true);
 
 	keyDown = m_input->IsKeyDown(DIK_A);
-	m_movement->MoveLeft(keyDown);
+	if (keyDown) m_movement->MoveLeft(true);
 
 	keyDown = m_input->IsKeyDown(DIK_D);
-	m_movement->MoveRight(keyDown);
+	if (keyDown) m_movement->MoveRight(true);
 
 	keyDown = m_input->IsKeyDown(DIK_SPACE);
-	m_movement->MoveUpward(keyDown);
+	if (keyDown) m_movement->MoveUpward(true);
 
 	keyDown = m_input->IsKeyDown(DIK_LCONTROL);
-	m_movement->MoveDownward(keyDown);
-
-	keyDown = m_input->IsKeyDown(DIK_LSHIFT);
-	m_movement->SetMoveSpeed(keyDown, movementSpeed);
+	if (keyDown) m_movement->MoveDownward(true);
 
 	// Run the poisition method moveMouse and pass in variables from the input class.
 	m_movement->MoveMouse(mouseChangeX, mouseChangeY, mouseSensitivity);
 
 	// Get the new view point position/rotation.
-	m_movement->GetPosition(posX, posY, posZ);
-	m_movement->GetRotation(rotX, rotY, rotZ);
+	m_movement->GetPosition(pos);
+	m_movement->GetRotation(rot);
 
 	// Reset the cursor to the centre of the screen as we now have mouse movement.
 	m_input->ResetMousePosition();
 
 	// Set the position of the camera.
-	m_camera->SetPosition(posX, posY, posZ);
-	m_camera->SetRotation(rotX, rotY, rotZ);
+	m_camera->SetPosition(pos.x, pos.y, pos.z);
+	m_camera->SetRotation(rot.x, rot.y, rot.z);
+
+	// Handle interaction events (On key release).
+	HandleInteraction(frameTime);
+
+	return true;
+}
+
+bool PlayerController::HandleInteraction(float frameTime)
+{
+	bool keyDown;
+	float movementSpeed = 1.0;// Used to affect movement speed easily.
+
+	keyDown = m_input->IsKeyDown(DIK_LSHIFT);
+	if (keyDown && keyReleased)
+	{
+		keyReleased = false;
+		keyWaiting = true;
+
+		m_movement->SetMoveSpeed(false, movementSpeed);
+	}
+	else if (!keyDown && keyWaiting)
+	{
+		keyReleased = true;
+		keyWaiting = false;
+
+		m_movement->SetMoveSpeed(false, 0.0f);
+	}
+
+	keyDown = m_input->IsKeyDown(DIK_M);
+	if (keyDown && keyReleased)
+	{
+		keyReleased = false;
+		keyWaiting = true;
+	}
+	else if (!keyDown && keyWaiting)
+	{
+		keyReleased = true;
+		keyWaiting = false;
+
+		LightMovement = !LightMovement;
+	}
+
 
 	return true;
 }
@@ -179,15 +215,17 @@ bool PlayerController::Render()
 	return true;
 }
 
+// Return the view matrix of the camera inside the player controller object.
 void PlayerController::GetCameraViewMatrix(XMMATRIX& matrix)
 {
 	m_camera->GetViewMatrix(matrix);
 	return;
 }
 
-void PlayerController::GetPlayerPosition(float& x, float& y, float& z)
+// Return the players position.
+void PlayerController::GetPlayerPosition(XMFLOAT3& pos)
 {
-	m_camera->GetPosition(x, y, z);
+	m_movement->GetPosition(pos);
 
 	return;
 }

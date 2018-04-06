@@ -9,7 +9,9 @@
 // INCLUDES //
 //////////////
 #include <math.h>
+#include <DirectXMath.h>
 
+using namespace DirectX;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: Movement
@@ -25,8 +27,8 @@ public:
 	void SetRotation(float, float, float);
 	void SetMoveSpeed(bool, float moveSpeed);
 
-	void GetPosition(float&, float&, float&);
-	void GetRotation(float&, float&, float&);
+	void GetPosition(XMFLOAT3&);
+	void GetRotation(XMFLOAT3&);
 
 	void SetFrameTime(float);
 
@@ -40,8 +42,8 @@ public:
 
 
 private:
-	float m_positionX, m_positionY, m_positionZ;
-	float m_rotationX, m_rotationY, m_rotationZ;
+	XMFLOAT3 m_position;
+	XMFLOAT3 m_rotation;
 
 	float m_frameTime;
 

@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: lightclass.h
+// Filename: Light.h
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef _LIGHTCLASS_H_
-#define _LIGHTCLASS_H_
+#ifndef _LIGHT_H_
+#define _LIGHT_H_
 
 //////////////
 // INCLUDES //
@@ -32,7 +32,7 @@ public:
 	XMFLOAT3 GetPosition();
 
 	void GenerateViewMatrix();
-	void GenerateProjectionMatrix(float, float);
+	void GenerateOrthoMatrix(float, float, float);
 
 	void GetViewMatrix(XMMATRIX&);
 	void GetProjectionMatrix(XMMATRIX&);

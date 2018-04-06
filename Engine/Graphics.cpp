@@ -72,7 +72,8 @@ bool Graphics::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int s
 	m_light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_light->SetPosition(0.0f, 8.0f, -5.0f);
 	m_light->SetLookAt(0.0f, 0.0f, 0.0f);
-	m_light->GenerateProjectionMatrix(SCREEN_DEPTH, SCREEN_NEAR);
+	m_light->GenerateOrthoMatrix(50.0f, SCREEN_DEPTH, SCREEN_NEAR);
+	lightMovementSwitch = true;
 
 	// Create the cube object.
 	m_cube = new Model;
@@ -82,14 +83,14 @@ bool Graphics::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int s
 	}
 
 	// Initialize the cube object.
-	result = m_cube->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/marble.dds");
+	result = m_cube->Initialize(m_D3D->GetDevice(), "../Engine/data/sphere.txt", L"../Engine/data/marble.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the cube object.", L"Error", MB_OK);
 		return false;
 	}
 
-	m_cube->SetPosition(0.0f, 0.0f, 0.0f);
+	m_cube->SetPosition(0.0f, 0.5f, 0.0f);
 
 	// Create the ground object.
 	m_ground = new Model;
@@ -106,24 +107,9 @@ bool Graphics::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 
-	m_ground->SetPosition(0.0f, -5.0f, 0.0f);
+	m_ground->SetPosition(0.0f, -1.0f, 0.0f);
 
 	// Create player controller.
-	m_playerController = new PlayerController;
-	if (!m_playerController)
-	{
-		return false;
-	}
-	
-	// Initialise the player controller.
-	result = m_playerController->Initialize(hinstance, hwnd, screenWidth, screenHeight);
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the player controller.", L"Error", MB_OK);
-		return false;
-	}
-
-		// Create player controller.
 	m_playerController = new PlayerController;
 	if (!m_playerController)
 	{
@@ -247,9 +233,15 @@ bool Graphics::Frame()
 
 	m_playerController->Frame();
 
-	// Get player position to centre the skybox.
-	float posX, posY, posZ;
-	m_playerController->GetPlayerPosition(posX, posY, posZ);
+	// If the light movement is enabled then run the movement every frame.
+	if (m_playerController->LightMovement)
+	{
+		result = HandleLightMovement();
+		if (!result)
+		{
+			return false;
+		}
+	}
 
 	// Render the graphics.
 	result = Render();
@@ -261,10 +253,39 @@ bool Graphics::Frame()
 	return true;
 }
 
+bool Graphics::HandleLightMovement()
+{
+	XMFLOAT3 currentLightPos;
+
+	// Move light left to right.
+	currentLightPos = m_light->GetPosition();
+
+	// Update the position of the light each frame.
+	if (lightMovementSwitch)
+	{
+		currentLightPos.x += 0.02f;
+	}
+	else
+	{
+		currentLightPos.x -= 0.02f;
+	}
+
+	// Flip the lights movement.
+	if (currentLightPos.x > 10.0f || currentLightPos.x < -10.0f)
+	{
+		lightMovementSwitch = !lightMovementSwitch;
+	}
+
+	// Update the position of the light.
+	m_light->SetPosition(currentLightPos.x, currentLightPos.y, currentLightPos.z);
+
+	return true;
+}
+
 bool Graphics::RenderTextures()
 {
 	XMMATRIX worldMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, translateMatrix;
-	float posX, posY, posZ;
+	XMFLOAT3 pos;
 	bool result;
 
 	// Set the render target to be the render to texture.
@@ -284,9 +305,9 @@ bool Graphics::RenderTextures()
 	m_light->GetProjectionMatrix(lightProjectionMatrix);
 
 	// Setup the translation matrix for the cube model.
-	m_cube->GetPosition(posX, posY, posZ);
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(1.0f, 1.0f, 1.0f));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(posX, posY, posZ));
+	m_cube->GetPosition(pos);
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
 
 	// Render the cube model with the depth shader.
 	m_cube->Render(m_D3D->GetDeviceContext());
@@ -296,10 +317,13 @@ bool Graphics::RenderTextures()
 		return false;
 	}
 
+	// Reset the world matrix for current model.
+	m_D3D->GetWorldMatrix(worldMatrix);
+
 	// Setup the translation matrix for the cube model.
-	m_ground->GetPosition(posX, posY, posZ);
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(20.0f, 0.2f, 20.0f));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(posX, posY, posZ));
+	m_ground->GetPosition(pos);
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(10.0f, 0.2f, 10.0f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
 
 	// Render the cube model with the depth shader.
 	m_ground->Render(m_D3D->GetDeviceContext());
@@ -322,7 +346,7 @@ bool Graphics::RenderTextures()
 bool Graphics::Render()
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, translateMatrix, lightViewMatrix, lightProjectionMatrix;
-	float posX, posY, posZ;
+	XMFLOAT3 pos;
 	bool result;
 
 	// First render the scenes textures.
@@ -351,10 +375,9 @@ bool Graphics::Render()
 	m_light->GetProjectionMatrix(lightProjectionMatrix);
 
 	// Setup the translation matrix for the cube model.
-	m_cube->GetPosition(posX, posY, posZ);
-
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(1.0f, 1.0f, 1.0f));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(posX, posY, posZ));
+	m_cube->GetPosition(pos);
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
 
 	// Put the cube model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_cube->Render(m_D3D->GetDeviceContext());
@@ -368,10 +391,13 @@ bool Graphics::Render()
 		return false;
 	}
 
+	// Reset the world matrix for current model.
+	m_D3D->GetWorldMatrix(worldMatrix);
+
 	// Setup the translation matrix for the ground model.
-	m_ground->GetPosition(posX, posY, posZ);
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(20.0f, 0.2f, 20.0f));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(posX, posY, posZ));
+	m_ground->GetPosition(pos);
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(10.0f, 0.2f, 10.0f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
 
 	// Put the ground model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_ground->Render(m_D3D->GetDeviceContext());
@@ -390,26 +416,3 @@ bool Graphics::Render()
 
 	return true;
 }
-
-
-
-
-
-/**			OLD SKYBOX
-// Get player position for the skybox.
-m_playerController->GetPlayerPosition(posX, posY, posZ);
-
-// Setup the rotation and translation of the Skybox.
-m_D3D->GetWorldMatrix(worldMatrix);
-worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(-100.0f, -100.0f, -100.0f));// Revered the scale so that the sphere was turned inside out so the texture renders on the inside.
-worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(posX, posY, posZ));// Sets the current skybox position to the player position so it stays at a constant distance from the player.
-
-// Render the Skybox using the texture shader. Used the texture shader as the skybox isnt suposed to have shadows, reflections etc.
-m_skybox->Render(m_D3D->GetDeviceContext());
-m_shaderManager->RenderTextureShader(m_D3D->GetDeviceContext(), m_skybox->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_skybox->GetTexture());
-
-if (!result)
-{
-return false;
-}
-**/

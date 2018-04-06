@@ -51,7 +51,7 @@ public:
 	void Shutdown();
 	void Render(ID3D11DeviceContext*);
 
-	void GetPosition(float&, float&, float&);
+	void GetPosition(XMFLOAT3&);
 	void SetPosition(float, float, float);
 	int GetIndexCount();
 	ID3D11ShaderResourceView* GetTexture();

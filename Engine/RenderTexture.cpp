@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: RenderTexture.cpp
+// Filename: RenderTexture.cpp	
 ////////////////////////////////////////////////////////////////////////////////
 #include "RenderTexture.h"
 
@@ -140,30 +140,35 @@ bool RenderTexture::Initialize(ID3D11Device* device, int textureWidth, int textu
 
 void RenderTexture::Shutdown()
 {
+	// Release the depth stencile view object.
 	if (m_depthStencilView)
 	{
 		m_depthStencilView->Release();
 		m_depthStencilView = 0;
 	}
 
+	// Release the depth stencile buffer object.
 	if (m_depthStencilBuffer)
 	{
 		m_depthStencilBuffer->Release();
 		m_depthStencilBuffer = 0;
 	}
 
+	// Release the shader resource view object.
 	if (m_shaderResourceView)
 	{
 		m_shaderResourceView->Release();
 		m_shaderResourceView = 0;
 	}
 
+	// Release the render target object.
 	if (m_renderTargetView)
 	{
 		m_renderTargetView->Release();
 		m_renderTargetView = 0;
 	}
 
+	// Release the render target texture object.
 	if (m_renderTargetTexture)
 	{
 		m_renderTargetTexture->Release();

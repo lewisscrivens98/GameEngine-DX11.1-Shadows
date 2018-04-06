@@ -36,6 +36,12 @@ bool Input::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int scre
 	oldMouseX = 0;
 	oldMouseY = 0;
 
+	// Initialize the key down booleans.
+	for(int i = 0; i < 256; i++)
+	{
+		m_keyDown[i] = false;
+	}
+
 	// Initialize the main direct input interface.
 	result = DirectInput8Create(hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_directInput, NULL);
 	if (FAILED(result))
@@ -257,9 +263,17 @@ bool Input::IsKeyDown(unsigned char input)
 	// Do a bitwise and on the keyboard state to check if the escape key is currently being pressed.
 	if (m_keyboardState[input] & 0x80)
 	{
+		m_keyDown[input] = true;
 		return true;
 	}
 	//else
+	m_keyDown[input] = false;
 	return false;
+}
+
+// Currently not needed.
+bool Input::IsKeyUp(unsigned char input)
+{
+	return true;
 }
 

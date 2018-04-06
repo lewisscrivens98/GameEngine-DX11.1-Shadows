@@ -6,13 +6,8 @@
 
 Camera::Camera()
 {
-	m_positionX = 0.0f;
-	m_positionY = 0.0f;
-	m_positionZ = 0.0f;
-
-	m_rotationX = 0.0f;
-	m_rotationY = 0.0f;
-	m_rotationZ = 0.0f;
+	m_position = XMFLOAT3();
+	m_rotation = XMFLOAT3();
 }
 
 
@@ -28,39 +23,27 @@ Camera::~Camera()
 
 void Camera::SetPosition(float x, float y, float z)
 {
-	m_positionX = x;
-	m_positionY = y;
-	m_positionZ = z;
+	m_position = XMFLOAT3(x, y, z);
 	return;
 }
 
 
 void Camera::SetRotation(float x, float y, float z)
 {
-	m_rotationX = x;
-	m_rotationY = y;
-	m_rotationZ = z;
+	m_rotation = XMFLOAT3(x, y, z);
 	return;
 }
 
-XMFLOAT3 Camera::GetPosition()
+void Camera::GetPosition(XMFLOAT3& pos)
 {
-	return XMFLOAT3(m_positionX, m_positionY, m_positionZ);
-}
-
-void Camera::GetPosition(float& x, float& y, float & z)
-{
-	x = m_positionX;
-	y = m_positionY;
-	z = m_positionZ;
-
+	pos = m_position;
 	return;
 }
 
-
-XMFLOAT3 Camera::GetRotation()
+void Camera::GetRotation(XMFLOAT3& rot)
 {
-	return XMFLOAT3(m_rotationX, m_rotationY, m_rotationZ);
+	m_rotation = rot;
+	return;
 }
 
 
@@ -75,15 +58,15 @@ void Camera::Render()
 	up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	// Setup the position of the camera in the world.
-	position = XMVectorSet(m_positionX, m_positionY, m_positionZ, 0.0f);
+	position = XMVectorSet(m_position.x, m_position.y, m_position.z, 0.0f);
 
 	// Setup where the camera is looking by default.
 	lookAt = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
-	pitch = m_rotationX * 0.0174532925f;
-	yaw   = m_rotationY * 0.0174532925f;
-	roll  = m_rotationZ * 0.0174532925f;
+	pitch = m_rotation.x * 0.0174532925f;
+	yaw   = m_rotation.y * 0.0174532925f;
+	roll  = m_rotation.z * 0.0174532925f;
 
 	// Create the rotation matrix from the yaw, pitch, and roll values.
 	rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll); //Is the order correct, Xu 13/11/2015
@@ -121,15 +104,15 @@ void Camera::GenerateBaseViewMatrix()
 	up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	// Setup the position of the camera in the world.
-	position = XMVectorSet(m_positionX, m_positionY, m_positionZ, 0.0f);
+	position = XMVectorSet(m_position.x, m_position.y, m_position.z, 0.0f);
 
 	// Setup where the camera is looking by default.
 	lookAt = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
-	pitch = m_rotationX * 0.0174532925f;
-	yaw = m_rotationY * 0.0174532925f;
-	roll = m_rotationZ * 0.0174532925f;
+	pitch = m_rotation.x * 0.0174532925f;
+	yaw = m_rotation.y * 0.0174532925f;
+	roll = m_rotation.z * 0.0174532925f;
 
 	// Create the rotation matrix from the yaw, pitch, and roll values.
 	rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll); //Is the order correct, Xu 13/11/2015
@@ -166,15 +149,15 @@ void Camera::RenderReflection(float height)
 	up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	// Setup the position of the camera in the world.
-	position = XMVectorSet(m_positionX, -m_positionY + (height * 2.0f), m_positionZ, 0.0f);
+	position = XMVectorSet(m_position.x, -m_position.y + (height * 2.0f), m_position.z, 0.0f);
 
 	// Setup where the camera is looking by default.
 	lookAt = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
-	pitch = -m_rotationX * 0.0174532925f;
-	yaw = m_rotationY * 0.0174532925f;
-	roll = m_rotationZ * 0.0174532925f;
+	pitch = -m_rotation.x * 0.0174532925f;
+	yaw = m_rotation.y * 0.0174532925f;
+	roll = m_rotation.z * 0.0174532925f;
 
 	// Create the rotation matrix from the yaw, pitch, and roll values.
 	rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll); //Is the order correct, Xu 13/11/2015
