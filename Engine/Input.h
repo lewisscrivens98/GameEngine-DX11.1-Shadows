@@ -46,7 +46,7 @@ public:
 	void ResetMousePosition();
 
 	bool IsKeyDown(unsigned char);
-	bool IsKeyUp(unsigned char);
+	void KeyPressedTrigger(unsigned char);
 
 private:
 	bool ReadKeyboard();
@@ -59,11 +59,14 @@ private:
 	IDirectInputDevice8* m_mouse;
 
 	unsigned char m_keyboardState[256];
-	bool m_keyDown[256];
 	DIMOUSESTATE m_mouseState;
 
 	int m_screenWidth, m_screenHeight;
 	int m_mouseX, m_mouseY, oldMouseX, oldMouseY;
+
+public:
+
+	bool m_keyPressed[256];
 };
 
 #endif

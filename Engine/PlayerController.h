@@ -16,7 +16,6 @@ public:
 	bool Initialize(HINSTANCE, HWND, int, int);
 	bool Frame();
 	bool HandleMovement(float);
-	bool HandleInteraction(float);
 	bool Render();
 
 	void GetCameraViewMatrix(XMMATRIX&);
@@ -31,8 +30,7 @@ private:
 	Timer* m_timer;
 	Movement* m_movement;
 
-	bool keyReleased;
-	bool keyWaiting;
+	bool currentInteraction;
 
 public:
 	 

@@ -49,8 +49,7 @@ bool PlayerController::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 		return false;
 	}
 
-	keyReleased = true;
-	keyWaiting = false;
+	currentInteraction = false;
 
 	// Create the timer object.
 	m_timer = new Timer;
@@ -115,7 +114,8 @@ bool PlayerController::Frame()
 
 bool PlayerController::HandleMovement(float frameTime)
 {
-	bool keyDown;
+	unsigned char key;
+	bool keyDown, keyPressed;
 	XMFLOAT3 rot, pos;
 	int mouseChangeX, mouseChangeY;
 	float mouseSensitivity = 0.1f;// Used to affect mouseMovement speed easily.
@@ -130,23 +130,57 @@ bool PlayerController::HandleMovement(float frameTime)
 	m_movement->SetFrameTime(frameTime);
 
 	// Handle the input.
+	key = DIK_W;
 	keyDown = m_input->IsKeyDown(DIK_W);
-	if (keyDown) m_movement->MoveForward(true);
+	m_movement->MoveForward(keyDown);
 
-	keyDown = m_input->IsKeyDown(DIK_S);
-	if (keyDown) m_movement->MoveBackward(true);
+	key = DIK_S;
+	keyDown = m_input->IsKeyDown(key);
+	m_movement->MoveBackward(keyDown);
 
-	keyDown = m_input->IsKeyDown(DIK_A);
-	if (keyDown) m_movement->MoveLeft(true);
+	key = DIK_A;
+	keyDown = m_input->IsKeyDown(key);
+	m_movement->MoveLeft(keyDown);
 
-	keyDown = m_input->IsKeyDown(DIK_D);
-	if (keyDown) m_movement->MoveRight(true);
+	key = DIK_D;
+	keyDown = m_input->IsKeyDown(key);
+	m_movement->MoveRight(keyDown);
 
-	keyDown = m_input->IsKeyDown(DIK_SPACE);
-	if (keyDown) m_movement->MoveUpward(true);
+	key = DIK_SPACE;
+	keyDown = m_input->IsKeyDown(key);
+	m_movement->MoveUpward(keyDown);
 
-	keyDown = m_input->IsKeyDown(DIK_LCONTROL);
-	if (keyDown) m_movement->MoveDownward(true);
+	key = DIK_LCONTROL;
+	keyDown = m_input->IsKeyDown(key);
+	m_movement->MoveDownward(keyDown);
+
+	float movementSpeed = 1.0;// Used to affect movement speed easily.
+	key = DIK_LSHIFT;
+	keyDown = m_input->IsKeyDown(key);
+	keyPressed = m_input->m_keyPressed[key];
+	if (keyDown && !keyPressed)// First Key press
+	{
+		m_movement->SetMoveSpeed(true, movementSpeed);
+		m_input->KeyPressedTrigger(key);
+	}
+	else if (!keyDown && keyPressed)// KeyRelease
+	{
+		m_movement->SetMoveSpeed(false, 0.0f);
+		m_input->KeyPressedTrigger(key);
+	}
+
+	key = DIK_M;
+	keyDown = m_input->IsKeyDown(key);
+	keyPressed = m_input->m_keyPressed[key];
+	if (keyDown && !keyPressed)// First Key press
+	{
+		LightMovement = !LightMovement;
+		m_input->KeyPressedTrigger(key);
+	}
+	else if (!keyDown && keyPressed)// KeyRelease
+	{
+		m_input->KeyPressedTrigger(key);
+	}
 
 	// Run the poisition method moveMouse and pass in variables from the input class.
 	m_movement->MoveMouse(mouseChangeX, mouseChangeY, mouseSensitivity);
@@ -161,48 +195,6 @@ bool PlayerController::HandleMovement(float frameTime)
 	// Set the position of the camera.
 	m_camera->SetPosition(pos.x, pos.y, pos.z);
 	m_camera->SetRotation(rot.x, rot.y, rot.z);
-
-	// Handle interaction events (On key release).
-	HandleInteraction(frameTime);
-
-	return true;
-}
-
-bool PlayerController::HandleInteraction(float frameTime)
-{
-	bool keyDown;
-	float movementSpeed = 1.0;// Used to affect movement speed easily.
-
-	keyDown = m_input->IsKeyDown(DIK_LSHIFT);
-	if (keyDown && keyReleased)
-	{
-		keyReleased = false;
-		keyWaiting = true;
-
-		m_movement->SetMoveSpeed(false, movementSpeed);
-	}
-	else if (!keyDown && keyWaiting)
-	{
-		keyReleased = true;
-		keyWaiting = false;
-
-		m_movement->SetMoveSpeed(false, 0.0f);
-	}
-
-	keyDown = m_input->IsKeyDown(DIK_M);
-	if (keyDown && keyReleased)
-	{
-		keyReleased = false;
-		keyWaiting = true;
-	}
-	else if (!keyDown && keyWaiting)
-	{
-		keyReleased = true;
-		keyWaiting = false;
-
-		LightMovement = !LightMovement;
-	}
-
 
 	return true;
 }
