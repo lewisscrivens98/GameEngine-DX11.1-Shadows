@@ -33,9 +33,11 @@ public:
 
 	void GenerateViewMatrix();
 	void GenerateOrthoMatrix(float, float, float);
+	void GenerateOrthoMatrix(float, float);// Original matrix from rastertek.
 
 	void GetViewMatrix(XMMATRIX&);
 	void GetProjectionMatrix(XMMATRIX&);
+
 
 private:
 	XMFLOAT4 m_ambientColor;

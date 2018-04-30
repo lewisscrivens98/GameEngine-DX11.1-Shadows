@@ -62,17 +62,17 @@
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bumpmap.ps" />
-    <None Include="bumpmap.vs" />
+    <None Include="bumpmap_ps.hlsl" />
+    <None Include="bumpmap_vs.hlsl" />
     <None Include="ClassDiagram.cd" />
-    <None Include="depth.ps" />
-    <None Include="depth.vs" />
-    <None Include="light.ps" />
-    <None Include="light.vs" />
-    <None Include="shadow.ps" />
-    <None Include="shadow.vs" />
-    <None Include="texture.ps" />
-    <None Include="texture.vs" />
+    <None Include="depth_ps.hlsl" />
+    <None Include="depth_vs.hlsl" />
+    <None Include="light_ps.hlsl" />
+    <None Include="light_vs.hlsl" />
+    <None Include="shadow_ps.hlsl" />
+    <None Include="shadow_vs.hlsl" />
+    <None Include="texture_ps.hlsl" />
+    <None Include="texture_vs.hlsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B582C848-8474-42F1-91EE-C5B948FE3486}</ProjectGuid>

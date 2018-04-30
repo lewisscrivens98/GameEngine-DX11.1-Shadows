@@ -31,7 +31,7 @@ bool BumpmapShader::Initialize(ID3D11Device* device, HWND hwnd)
 
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"../Engine/bumpmap.vs", L"../Engine/bumpmap.ps");
+	result = InitializeShader(device, hwnd, L"../Engine/bumpmap_vs.hlsl", L"../Engine/bumpmap_ps.hlsl");
 	if(!result)
 	{
 		return false;

@@ -196,35 +196,35 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="bumpmap.ps">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="light.ps">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="texture.ps">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="bumpmap.vs">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="light.vs">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="texture.vs">
-      <Filter>Shader Files</Filter>
-    </None>
     <None Include="ClassDiagram.cd" />
-    <None Include="shadow.ps">
+    <None Include="bumpmap_ps.hlsl">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="shadow.vs">
+    <None Include="bumpmap_vs.hlsl">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="depth.ps">
+    <None Include="depth_ps.hlsl">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="depth.vs">
+    <None Include="depth_vs.hlsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="light_ps.hlsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="light_vs.hlsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shadow_ps.hlsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shadow_vs.hlsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="texture_ps.hlsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="texture_vs.hlsl">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>

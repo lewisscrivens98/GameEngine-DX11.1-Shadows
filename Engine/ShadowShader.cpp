@@ -33,7 +33,7 @@ bool ShadowShader::Initialize(ID3D11Device* device, HWND hwnd)
 	bool result;
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"../Engine/shadow.vs", L"../Engine/shadow.ps");
+	result = InitializeShader(device, hwnd, L"../Engine/shadow_vs.hlsl", L"../Engine/shadow_ps.hlsl");
 	if (!result)
 	{
 		return false;

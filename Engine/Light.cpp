@@ -95,6 +95,18 @@ void Light::GenerateOrthoMatrix(float width, float screenDepth, float screenNear
 	return;
 }
 
+// Create a projection matrix to determin the area the lightsource will effect.
+void Light::GenerateOrthoMatrix(float screenDepth, float screenNear)
+{
+	float fieldOfView = (float)XM_PI / 2.0f;
+	float screenAspect = 1.0f;
+
+	// Create the projection matrix for the light.
+	m_projectionMatrix = XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);
+
+	return;
+}
+
 // Set given value to the light's view matrix
 void Light::GetViewMatrix(XMMATRIX& viewMatrix)
 {

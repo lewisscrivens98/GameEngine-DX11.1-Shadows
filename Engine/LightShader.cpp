@@ -32,7 +32,7 @@ bool LightShader::Initialize(ID3D11Device* device, HWND hwnd)
 
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"../Engine/light.vs", L"../Engine/light.ps");
+	result = InitializeShader(device, hwnd, L"../Engine/light_vs.hlsl", L"../Engine/light_ps.hlsl");
 	if(!result)
 	{
 		return false;
