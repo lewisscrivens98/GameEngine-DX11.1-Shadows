@@ -75,10 +75,10 @@ bool Graphics::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int s
 	}
 
 	// Initialize the light object.
-	m_light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
+	m_light->SetAmbientColor(0.3f, 0.3f, 0.3f, 1.0f);
 	m_light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_light->SetLookAt(0.0f, 0.0f, 0.0f);
-	m_light->GenerateOrthoMatrix(SCREEN_DEPTH, SCREEN_NEAR);
+	m_light->GenerateOrthoMatrix(30.0f, SCREEN_DEPTH, SCREEN_NEAR);
 	m_light->SetPosition(0.0f, 8.0f, -5.0f);
 	lightMovementSwitch = true;
 
@@ -90,7 +90,7 @@ bool Graphics::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int s
 	}
 
 	// Initialize the cube object.
-	result = m_cube->Initialize(m_D3D->GetDevice(), "../Engine/data/sphere.txt", L"../Engine/data/marble.dds");
+	result = m_cube->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/marble.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the cube object.", L"Error", MB_OK);
@@ -456,7 +456,8 @@ bool Graphics::RenderTextures()
 
 	// Setup the translation matrix for the cube model.
 	m_cube->GetPosition(pos);
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
+	//worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(XM_PI / 6));
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
 
 	// Render the cube model with the depth shader.
@@ -524,7 +525,8 @@ bool Graphics::RenderShadowTextures()
 
 	// Setup the translation matrix for the cube model.
 	m_cube->GetPosition(pos);
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
+	//worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(XM_PI / 6));
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
 
 	// Render the cube model using the shadow shader.
@@ -597,7 +599,8 @@ bool Graphics::Render()
 
 	// Setup the translation matrix for the cube model.
 	m_cube->GetPosition(pos);
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
+	//worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(XM_PI / 6));
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
 
 	// Put the cube model vertex and index buffers on the graphics pipeline to prepare them for drawing.

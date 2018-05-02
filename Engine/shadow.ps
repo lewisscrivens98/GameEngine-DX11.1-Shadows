@@ -45,7 +45,7 @@ float4 ShadowPixelShader(PixelInputType input) : SV_TARGET
 	bias = 0.001f;
 
 	// Set the default output color to be black (shadow).
-    color = float4(0.0f, 0.0f, 0.0f, 0.8f);
+    color = float4(0.3f, 0.3f, 0.3f, 1.0f);
 
 	// Calculate the projected texture coordinates.
 	projectTexCoord.x =  input.lightViewPosition.x / input.lightViewPosition.w / 2.0f + 0.5f;
