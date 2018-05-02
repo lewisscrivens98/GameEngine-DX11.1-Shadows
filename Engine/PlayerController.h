@@ -19,6 +19,7 @@ public:
 	bool Render();
 
 	void GetCameraViewMatrix(XMMATRIX&);
+	void GetBaseCameraViewMatrix(XMMATRIX&);
 	void GetPlayerPosition(XMFLOAT3&);
 
 	void Shutdown();

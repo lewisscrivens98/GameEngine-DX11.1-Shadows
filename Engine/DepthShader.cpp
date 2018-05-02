@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: depthshaderclass.cpp
+// Filename: DepthShader.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "DepthShader.h"
+
 
 DepthShader::DepthShader()
 {
@@ -25,9 +26,10 @@ DepthShader::~DepthShader()
 bool DepthShader::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
-	
+
+
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"../Engine/depth_vs.hlsl", L"../Engine/depth_ps.hlsl");
+	result = InitializeShader(device, hwnd, L"../Engine/depth.vs", L"../Engine/depth.ps");
 	if (!result)
 	{
 		return false;
@@ -45,8 +47,9 @@ void DepthShader::Shutdown()
 	return;
 }
 
-bool DepthShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, const XMMATRIX& worldMatrix, const XMMATRIX& viewMatrix,
-	const XMMATRIX& projectionMatrix)
+
+bool DepthShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, const XMMATRIX& worldMatrix, const XMMATRIX&  viewMatrix,
+	const XMMATRIX&  projectionMatrix)
 {
 	bool result;
 
@@ -86,7 +89,7 @@ bool DepthShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFil
 		D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexShaderBuffer, &errorMessage);
 	if (FAILED(result))
 	{
-		// If the shader failed to compile it should have writen something to the error message.
+		// If the shader failed to compile it should have written something to the error message.
 		if (errorMessage)
 		{
 			OutputShaderErrorMessage(errorMessage, hwnd, vsFilename);
@@ -102,6 +105,7 @@ bool DepthShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFil
 
 	// Compile the pixel shader code.
 	result = D3DCompileFromFile(psFilename, NULL, NULL, "DepthPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelShaderBuffer, &errorMessage);
+
 	if (FAILED(result))
 	{
 		// If the shader failed to compile it should have writen something to the error message.
@@ -229,7 +233,7 @@ void DepthShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, 
 	fout.open("shader-error.txt");
 
 	// Write out the error message.
-	for (i = 0; i<bufferSize; i++)
+	for (i = 0; i < bufferSize; i++)
 	{
 		fout << compileErrors[i];
 	}
@@ -247,12 +251,14 @@ void DepthShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, 
 	return;
 }
 
+
 bool DepthShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX& worldMatrix, const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	unsigned int bufferNumber;
 	MatrixBufferType* dataPtr;
+
 
 	// Lock the constant buffer so it can be written to.
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -264,7 +270,6 @@ bool DepthShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, const 
 	// Get a pointer to the data in the constant buffer.
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
 
-	// Transpose the matrices to prepare them for the shader.
 	// Copy the matrices into the constant buffer.
 	dataPtr->world = XMMatrixTranspose(worldMatrix);
 	dataPtr->view = XMMatrixTranspose(viewMatrix);

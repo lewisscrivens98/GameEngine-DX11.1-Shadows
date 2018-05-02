@@ -1,33 +1,39 @@
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\vc140.pdb
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\vc140.idb
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\directx11.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\ddstextureloader.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\font.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\graphics.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\hud.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\input.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\light.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\lightshader.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\main.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\model.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\movement.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\playercontroller.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\rendertexture.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\shadermanager.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\shadowshader.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\system.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\text.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\texture.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\textureshader.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\timer.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\bumpmapshader.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\bumpmodel.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\camera.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\depthshader.obj
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\debug\engine.pdb
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\engine.tlog\cl.command.1.tlog
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\engine.tlog\cl.read.1.tlog
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\engine.tlog\cl.write.1.tlog
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\engine.tlog\link.command.1.tlog
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\engine.tlog\link.read.1.tlog
-e:\university files\year 2\computer games studio 2\term 2\gameengine-dx11.1-version2\engine\debug\engine.tlog\link.write.1.tlog
+d:\university\old\gameengine-dx11.1-version2\engine\debug\vc140.pdb
+d:\university\old\gameengine-dx11.1-version2\engine\debug\vc140.idb
+d:\university\old\gameengine-dx11.1-version2\engine\debug\horizontalblurshader.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\hud.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\input.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\light.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\lightshader.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\main.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\model.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\movement.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\playercontroller.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\rendertexture.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\renderwindow.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\shadermanager.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\shadowshader.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\softshadowshader.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\system.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\text.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\texture.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\textureshader.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\timer.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\verticalblurshader.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\bumpmapshader.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\bumpmodel.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\camera.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\depthshader.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\directx11.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\ddstextureloader.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\font.obj
+d:\university\old\gameengine-dx11.1-version2\engine\debug\graphics.obj
+d:\university\old\gameengine-dx11.1-version2\debug\engine.ilk
+d:\university\old\gameengine-dx11.1-version2\debug\engine.exe
+d:\university\old\gameengine-dx11.1-version2\debug\engine.pdb
+d:\university\old\gameengine-dx11.1-version2\engine\debug\engine.tlog\cl.command.1.tlog
+d:\university\old\gameengine-dx11.1-version2\engine\debug\engine.tlog\cl.read.1.tlog
+d:\university\old\gameengine-dx11.1-version2\engine\debug\engine.tlog\cl.write.1.tlog
+d:\university\old\gameengine-dx11.1-version2\engine\debug\engine.tlog\link.command.1.tlog
+d:\university\old\gameengine-dx11.1-version2\engine\debug\engine.tlog\link.read.1.tlog
+d:\university\old\gameengine-dx11.1-version2\engine\debug\engine.tlog\link.write.1.tlog

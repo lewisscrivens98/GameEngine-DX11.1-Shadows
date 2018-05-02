@@ -1,0 +1,43 @@
+﻿  BumpmapShader.cpp
+BumpmapShader.cpp(323): warning C4244: '=': conversion from 'SIZE_T' to 'unsigned long', possible loss of data
+  BumpModel.cpp
+  Camera.cpp
+  DepthShader.cpp
+DepthShader.cpp(230): warning C4244: '=': conversion from 'SIZE_T' to 'unsigned long', possible loss of data
+  DirectX11.cpp
+DirectX11.cpp(41): warning C4101: 'error': unreferenced local variable
+DirectX11.cpp(38): warning C4101: 'stringLength': unreferenced local variable
+  DDSTextureLoader.cpp
+  Font.cpp
+  Graphics.cpp
+  HorizontalBlurShader.cpp
+HorizontalBlurShader.cpp(293): warning C4244: '=': conversion from 'SIZE_T' to 'unsigned long', possible loss of data
+  HUD.cpp
+  Input.cpp
+  Light.cpp
+  LightShader.cpp
+LightShader.cpp(329): warning C4244: '=': conversion from 'SIZE_T' to 'unsigned long', possible loss of data
+  main.cpp
+  Model.cpp
+  Movement.cpp
+  PlayerController.cpp
+  RenderTexture.cpp
+  RenderWindow.cpp
+  ShaderManager.cpp
+  Generating Code...
+  Compiling...
+  ShadowShader.cpp
+ShadowShader.cpp(301): warning C4244: '=': conversion from 'SIZE_T' to 'unsigned long', possible loss of data
+  SoftShadowShader.cpp
+SoftShadowShader.cpp(345): warning C4244: '=': conversion from 'SIZE_T' to 'unsigned long', possible loss of data
+  System.cpp
+  Text.cpp
+  Texture.cpp
+  TextureShader.cpp
+TextureShader.cpp(271): warning C4244: '=': conversion from 'SIZE_T' to 'unsigned long', possible loss of data
+  Timer.cpp
+  VerticalBlurShader.cpp
+VerticalBlurShader.cpp(293): warning C4244: '=': conversion from 'SIZE_T' to 'unsigned long', possible loss of data
+  Generating Code...
+  Engine.vcxproj -> D:\University\old\GameEngine-DX11.1-Version2\x64\Debug\Engine.exe
+  Engine.vcxproj -> D:\University\old\GameEngine-DX11.1-Version2\x64\Debug\Engine.pdb (Full PDB)

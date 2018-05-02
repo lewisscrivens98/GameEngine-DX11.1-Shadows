@@ -13,7 +13,10 @@
 #include "LightShader.h"
 #include "BumpmapShader.h"
 #include "ShadowShader.h"
+#include "SoftShadowShader.h"
 #include "DepthShader.h"
+#include "HorizontalBlurShader.h"
+#include "VerticalBlurShader.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,17 +40,26 @@ public:
 	bool RenderBumpMapShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*,
 		ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4);
 
-	bool RenderShadowShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*,
-		ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4, XMFLOAT4);
+	bool RenderShadowShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&,
+		ID3D11ShaderResourceView*, XMFLOAT3);
+
+	bool RenderSoftShadowShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*, ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4, XMFLOAT4);
 
 	bool RenderDepthShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&);
+
+	bool RenderHorizontalBlurShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*, float);
+	
+	bool RenderVerticalBlurShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*, float);
 
 private:
 	TextureShader* m_TextureShader;
 	LightShader* m_LightShader;
 	BumpmapShader* m_BumpMapShader;
 	ShadowShader* m_ShadowShader;
+	SoftShadowShader* m_SoftShadowShader;
 	DepthShader* m_DepthShader;
+	HorizontalBlurShader* m_HorizontalBlurShader;
+	VerticalBlurShader* m_VerticalBlurShader;
 };
 
 #endif

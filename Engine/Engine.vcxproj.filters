@@ -120,6 +120,18 @@
     <ClInclude Include="RenderTexture.h">
       <Filter>Header Files\Graphics\Texture</Filter>
     </ClInclude>
+    <ClInclude Include="SoftShadowShader.h">
+      <Filter>Header Files\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="HorizontalBlurShader.h">
+      <Filter>Header Files\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="VerticalBlurShader.h">
+      <Filter>Header Files\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderWindow.h">
+      <Filter>Header Files\Graphics\Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BumpmapShader.cpp">
@@ -194,37 +206,67 @@
     <ClCompile Include="RenderTexture.cpp">
       <Filter>Source Files\Graphics\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="HorizontalBlurShader.cpp">
+      <Filter>Source Files\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="SoftShadowShader.cpp">
+      <Filter>Source Files\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="VerticalBlurShader.cpp">
+      <Filter>Source Files\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderWindow.cpp">
+      <Filter>Source Files\Graphics\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
-    <None Include="bumpmap_ps.hlsl">
+    <None Include="texture.ps">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="bumpmap_vs.hlsl">
+    <None Include="texture.vs">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="depth_ps.hlsl">
+    <None Include="verticalblur.ps">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="depth_vs.hlsl">
+    <None Include="verticalblur.vs">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="light_ps.hlsl">
+    <None Include="bumpmap.ps">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="light_vs.hlsl">
+    <None Include="bumpmap.vs">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="shadow_ps.hlsl">
+    <None Include="depth.ps">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="shadow_vs.hlsl">
+    <None Include="depth.vs">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="texture_ps.hlsl">
+    <None Include="horizontalblur.ps">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="texture_vs.hlsl">
+    <None Include="horizontalblur.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="light.ps">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="light.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shadow.ps">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shadow.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="softshadow.ps">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="softshadow.vs">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>

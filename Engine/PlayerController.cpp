@@ -33,8 +33,6 @@ bool PlayerController::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 		return false;
 	}
 
-	//m_camera->SetPosition(0.0f, 0.0f, -10.0f);
-
 	m_input = new Input;
 	if (!m_input)
 	{
@@ -76,6 +74,14 @@ bool PlayerController::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 	// Set the initial position and rotation of the viewer.
 	m_movement->SetPosition(0.0f, 0.0f, -10.0f);
 	m_movement->SetRotation(0.0f, 0.0f, 0.0f);
+
+	// Create variables for viewing position of the scene.
+	XMFLOAT3 movPosition, movRotation;
+	m_movement->GetPosition(movPosition);
+	m_camera->SetPosition(movPosition.x, movPosition.y, movPosition.z);
+	m_movement->GetRotation(movRotation);
+	m_camera->SetRotation(movRotation.x, movRotation.y, movRotation.z);
+	m_camera->GenerateBaseViewMatrix();
 
 	return true;
 }
@@ -211,6 +217,13 @@ bool PlayerController::Render()
 void PlayerController::GetCameraViewMatrix(XMMATRIX& matrix)
 {
 	m_camera->GetViewMatrix(matrix);
+	return;
+}
+
+// Return the base view matrix of the camera inside the player controller object.
+void PlayerController::GetBaseCameraViewMatrix(XMMATRIX& matrix)
+{
+	m_camera->GetBaseViewMatrix(matrix);
 	return;
 }
 

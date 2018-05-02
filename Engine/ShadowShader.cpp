@@ -9,11 +9,8 @@ ShadowShader::ShadowShader()
 	m_vertexShader = 0;
 	m_pixelShader = 0;
 	m_layout = 0;
-	m_sampleStateWrap = 0;
-
 	m_sampleStateClamp = 0;
 	m_matrixBuffer = 0;
-	m_lightBuffer = 0;
 	m_lightBuffer2 = 0;
 }
 
@@ -25,15 +22,16 @@ ShadowShader::ShadowShader(const ShadowShader& other)
 
 ShadowShader::~ShadowShader()
 {
-}
 
+}
 
 bool ShadowShader::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
+
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"../Engine/shadow_vs.hlsl", L"../Engine/shadow_ps.hlsl");
+	result = InitializeShader(device, hwnd, L"../Engine/shadow.vs", L"../Engine/shadow.ps");
 	if (!result)
 	{
 		return false;
@@ -51,16 +49,17 @@ void ShadowShader::Shutdown()
 	return;
 }
 
+
 bool ShadowShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, const XMMATRIX& worldMatrix, const XMMATRIX& viewMatrix,
 	const XMMATRIX& projectionMatrix, const XMMATRIX& lightViewMatrix, const XMMATRIX& lightProjectionMatrix,
-	ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture, XMFLOAT3 lightPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor)
+	ID3D11ShaderResourceView* depthMapTexture, XMFLOAT3 lightPosition)
 {
 	bool result;
 
 
 	// Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, texture,
-		depthMapTexture, lightPosition, ambientColor, diffuseColor);
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, depthMapTexture,
+		lightPosition);
 	if (!result)
 	{
 		return false;
@@ -83,8 +82,8 @@ bool ShadowShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFi
 	unsigned int numElements;
 	D3D11_SAMPLER_DESC samplerDesc;
 	D3D11_BUFFER_DESC matrixBufferDesc;
-	D3D11_BUFFER_DESC lightBufferDesc;
 	D3D11_BUFFER_DESC lightBufferDesc2;
+
 
 	// Initialize the pointers this function will use to null.
 	errorMessage = 0;
@@ -96,7 +95,7 @@ bool ShadowShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFi
 		D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexShaderBuffer, &errorMessage);
 	if (FAILED(result))
 	{
-		// If the shader failed to compile it should have writen something to the error message.
+		// If the shader failed to compile it should have written something to the error message.
 		if (errorMessage)
 		{
 			OutputShaderErrorMessage(errorMessage, hwnd, vsFilename);
@@ -112,10 +111,9 @@ bool ShadowShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFi
 
 	// Compile the pixel shader code.
 	result = D3DCompileFromFile(psFilename, NULL, NULL, "ShadowPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelShaderBuffer, &errorMessage);
-
 	if (FAILED(result))
 	{
-		// If the shader failed to compile it should have writen something to the error message.
+		// If the shader failed to compile it should have written something to the error message.
 		if (errorMessage)
 		{
 			OutputShaderErrorMessage(errorMessage, hwnd, psFilename);
@@ -186,11 +184,11 @@ bool ShadowShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFi
 	pixelShaderBuffer->Release();
 	pixelShaderBuffer = 0;
 
-	// Create a wrap texture sampler state description.
+	// Create a clamp texture sampler state description.
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerDesc.MipLODBias = 0.0f;
 	samplerDesc.MaxAnisotropy = 1;
 	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
@@ -200,18 +198,6 @@ bool ShadowShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFi
 	samplerDesc.BorderColor[3] = 0;
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	// Create the texture sampler state.
-	result = device->CreateSamplerState(&samplerDesc, &m_sampleStateWrap);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Create a clamp texture sampler state description.
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 
 	// Create the texture sampler state.
 	result = device->CreateSamplerState(&samplerDesc, &m_sampleStateClamp);
@@ -230,21 +216,6 @@ bool ShadowShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFi
 
 	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
 	result = device->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Setup the description of the light dynamic constant buffer that is in the pixel shader.
-	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	lightBufferDesc.ByteWidth = sizeof(LightBufferType);
-	lightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	lightBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	lightBufferDesc.MiscFlags = 0;
-	lightBufferDesc.StructureByteStride = 0;
-
-	// Create the constant buffer pointer so we can access the pixel shader constant buffer from within this class.
-	result = device->CreateBuffer(&lightBufferDesc, NULL, &m_lightBuffer);
 	if (FAILED(result))
 	{
 		return false;
@@ -271,13 +242,7 @@ bool ShadowShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFi
 
 void ShadowShader::ShutdownShader()
 {
-	// Release the light constant buffers.
-	if (m_lightBuffer)
-	{
-		m_lightBuffer->Release();
-		m_lightBuffer = 0;
-	}
-
+	// Release the light constant buffer.
 	if (m_lightBuffer2)
 	{
 		m_lightBuffer2->Release();
@@ -291,13 +256,7 @@ void ShadowShader::ShutdownShader()
 		m_matrixBuffer = 0;
 	}
 
-	// Release the sampler states.
-	if (m_sampleStateWrap)
-	{
-		m_sampleStateWrap->Release();
-		m_sampleStateWrap = 0;
-	}
-
+	// Release the sampler state.
 	if (m_sampleStateClamp)
 	{
 		m_sampleStateClamp->Release();
@@ -335,7 +294,6 @@ void ShadowShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd,
 	unsigned long bufferSize, i;
 	ofstream fout;
 
-
 	// Get a pointer to the error message text buffer.
 	compileErrors = (char*)(errorMessage->GetBufferPointer());
 
@@ -346,7 +304,7 @@ void ShadowShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd,
 	fout.open("shader-error.txt");
 
 	// Write out the error message.
-	for (i = 0; i<bufferSize; i++)
+	for (i = 0; i < bufferSize; i++)
 	{
 		fout << compileErrors[i];
 	}
@@ -367,14 +325,12 @@ void ShadowShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd,
 
 bool ShadowShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX& worldMatrix, const XMMATRIX& viewMatrix,
 	const XMMATRIX& projectionMatrix, const XMMATRIX& lightViewMatrix, const XMMATRIX& lightProjectionMatrix,
-	ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture, XMFLOAT3 lightPosition,
-	XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor)
+	ID3D11ShaderResourceView* depthMapTexture, XMFLOAT3 lightPosition)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	unsigned int bufferNumber;
 	MatrixBufferType* dataPtr;
-	LightBufferType* dataPtr2;
 	LightBufferType2* dataPtr3;
 
 	// Lock the constant buffer so it can be written to.
@@ -404,32 +360,7 @@ bool ShadowShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, const
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
 	// Set shader texture resource in the pixel shader.
-	deviceContext->PSSetShaderResources(0, 1, &texture);
-
-	deviceContext->PSSetShaderResources(1, 1, &depthMapTexture);
-
-	// Lock the light constant buffer so it can be written to.
-	result = deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Get a pointer to the data in the constant buffer.
-	dataPtr2 = (LightBufferType*)mappedResource.pData;
-
-	// Copy the lighting variables into the constant buffer.
-	dataPtr2->ambientColor = ambientColor;
-	dataPtr2->diffuseColor = diffuseColor;
-
-	// Unlock the constant buffer.
-	deviceContext->Unmap(m_lightBuffer, 0);
-
-	// Set the position of the light constant buffer in the pixel shader.
-	bufferNumber = 0;
-
-	// Finally set the light constant buffer in the pixel shader with the updated values.
-	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer);
+	deviceContext->PSSetShaderResources(0, 1, &depthMapTexture);
 
 	// Lock the second light constant buffer so it can be written to.
 	result = deviceContext->Map(m_lightBuffer2, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -469,11 +400,9 @@ void ShadowShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCou
 
 	// Set the sampler states in the pixel shader.
 	deviceContext->PSSetSamplers(0, 1, &m_sampleStateClamp);
-	deviceContext->PSSetSamplers(1, 1, &m_sampleStateWrap);
 
 	// Render the triangle.
 	deviceContext->DrawIndexed(indexCount, 0, 0);
 
 	return;
 }
-

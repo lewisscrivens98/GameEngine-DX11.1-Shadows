@@ -3,13 +3,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "ShaderManager.h"
 
-
 ShaderManager::ShaderManager()
 {
 	m_TextureShader = 0;
 	m_LightShader = 0;
 	m_BumpMapShader = 0;
 	m_ShadowShader = 0;
+	m_SoftShadowShader = 0;
 	m_DepthShader = 0;
 }
 
@@ -88,6 +88,20 @@ bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 
+	m_SoftShadowShader = new SoftShadowShader;
+	if (!m_SoftShadowShader)
+	{
+		return false;
+	}
+
+	// Initialize the Soft Shadow shader object.
+	result = m_SoftShadowShader->Initialize(device, hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the soft shadow shader object.", L"Error", MB_OK);
+		return false;
+	}
+
 	m_DepthShader = new DepthShader;
 	if (!m_DepthShader)
 	{
@@ -99,6 +113,34 @@ bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the depth shader object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_HorizontalBlurShader = new HorizontalBlurShader;
+	if (!m_HorizontalBlurShader)
+	{
+		return false;
+	}
+
+	// Initialize the Horizontal blur shader object.
+	result = m_HorizontalBlurShader->Initialize(device, hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the horizontal blur shader object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_VerticalBlurShader = new VerticalBlurShader;
+	if (!m_VerticalBlurShader)
+	{
+		return false;
+	}
+
+	// Initialize the Vertical blur shader object.
+	result = m_VerticalBlurShader->Initialize(device, hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the vertical blur shader object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -140,12 +182,36 @@ void ShaderManager::Shutdown()
 		m_ShadowShader = 0;
 	}
 
+	// Release the soft shadow shader object.
+	if (m_SoftShadowShader)
+	{
+		m_SoftShadowShader->Shutdown();
+		delete m_SoftShadowShader;
+		m_SoftShadowShader = 0;
+	}
+
 	// Release the depth shader object.
 	if (m_DepthShader)
 	{
 		m_DepthShader->Shutdown();
 		delete m_DepthShader;
 		m_DepthShader = 0;
+	}
+
+	// Release the horizontal blur shader object.
+	if (m_HorizontalBlurShader)
+	{
+		m_HorizontalBlurShader->Shutdown();
+		delete m_HorizontalBlurShader;
+		m_HorizontalBlurShader = 0;
+	}
+
+	// Release the vertical blur shader object.
+	if (m_VerticalBlurShader)
+	{
+		m_VerticalBlurShader->Shutdown();
+		delete m_VerticalBlurShader;
+		m_VerticalBlurShader = 0;
 	}
 
 	return;
@@ -207,15 +273,30 @@ bool ShaderManager::RenderBumpMapShader(ID3D11DeviceContext* deviceContext, int 
 
 bool ShaderManager::RenderShadowShader(ID3D11DeviceContext* deviceContext, int indexCount, const XMMATRIX& worldMatrix,
 		const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix, const XMMATRIX& lightViewMatrix, 
-		const XMMATRIX& lightProjectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture, 
-		XMFLOAT3 lightPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor)
+		const XMMATRIX& lightProjectionMatrix, ID3D11ShaderResourceView* depthMapTexture, 
+XMFLOAT3 lightPosition)
 {
 	bool result;
 
 
 	// Render the model using the shadow shader.
 	result = m_ShadowShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, 
-		lightProjectionMatrix, texture, depthMapTexture, lightPosition, ambientColor, diffuseColor);
+		lightProjectionMatrix, depthMapTexture, lightPosition);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManager::RenderSoftShadowShader(ID3D11DeviceContext* deviceContext, int indexCount, const XMMATRIX& worldMatrix, const XMMATRIX& viewMatrix,
+	const XMMATRIX& projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* shadowTexture,
+	XMFLOAT3 lightPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor)
+{
+	bool result;
+	// Render the model using the soft shadow shader.
+	result = m_SoftShadowShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, shadowTexture, lightPosition, ambientColor, diffuseColor);
 	if (!result)
 	{
 		return false;
@@ -230,8 +311,40 @@ bool ShaderManager::RenderDepthShader(ID3D11DeviceContext* deviceContext, int in
 	bool result;
 
 
-	// Render the model using the shadow shader.
+	// Render the model using the depth shader.
 	result = m_DepthShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManager::RenderHorizontalBlurShader(ID3D11DeviceContext* deviceContext, int indexCount, const XMMATRIX& worldMatrix, const XMMATRIX& viewMatrix,
+	const XMMATRIX& projectionMatrix, ID3D11ShaderResourceView* texture, float screenWidth)
+{
+	bool result;
+
+
+	// Render the model using the horizontal blur shader.
+	result = m_HorizontalBlurShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, screenWidth);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManager::RenderVerticalBlurShader(ID3D11DeviceContext* deviceContext, int indexCount, const XMMATRIX& worldMatrix, const XMMATRIX& viewMatrix,
+	const XMMATRIX& projectionMatrix, ID3D11ShaderResourceView* texture, float screenHeight)
+{
+	bool result;
+
+
+	// Render the model using the vertical blur shader.
+	result = m_VerticalBlurShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, screenHeight);
 	if (!result)
 	{
 		return false;

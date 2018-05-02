@@ -3,7 +3,7 @@
 /////////////
 const bool FULL_SCREEN = true;
 const bool VSYNC_ENABLED = true;
-const float SCREEN_DEPTH = 100.0f;
+const float SCREEN_DEPTH = 80.0f;
 const float SCREEN_NEAR = 1.0f;
 const int SHADOWMAP_WIDTH = 2048;
 const int SHADOWMAP_HEIGHT = 2048;
@@ -24,6 +24,7 @@ const int SHADOWMAP_HEIGHT = 2048;
 #include "BumpModel.h"
 #include "PlayerController.h"
 #include "RenderTexture.h"
+#include "RenderWindow.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,6 +46,14 @@ private:
 	bool HandleLightMovement();
 	bool Render();
 	bool RenderTextures();
+	ID3D11ShaderResourceView* RenderBlurredShadows(ID3D11ShaderResourceView*, RenderTexture*);
+
+	// 5 more passes to blur the shadow texture map before final render.
+	bool RenderShadowTextures();
+	bool RenderDownSampledTextures();
+	bool RenderHorizontalBlurTextures();
+	bool RenderVerticalBlurTextures();
+	bool RenderUpSampledTextures();
 
 private:
 
@@ -54,8 +63,9 @@ private:
 	Model* m_cube;
 	Model* m_ground;
 	PlayerController* m_playerController;
-	RenderTexture* m_renderTexture;
-	DepthShader* m_depthShader;
+	RenderTexture *m_renderTexture, *m_shadowTexture, *m_downSampleTexture,
+		*m_upSampleTexture, *m_horizontalBlurTexture, *m_verticalBlurTexture;
+	RenderWindow *m_smallWindow, *m_fullWindow;
 	
 public:
 
