@@ -11,8 +11,10 @@ Graphics::Graphics()
 	m_cube = 0;
 	m_ground = 0;
 	m_playerController = 0;
-	m_renderTexture = 0;
+	m_renderDepth = 0;
+	m_renderDirectionalDepth = 0;
 	m_shadowTexture = 0;
+	m_directionalShadowTexture = 0;
 	m_horizontalBlurTexture = 0;
 	m_verticalBlurTexture = 0;
 	m_downSampleTexture = 0;
@@ -77,9 +79,10 @@ bool Graphics::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int s
 	// Initialize the light object.
 	m_light->SetAmbientColor(0.3f, 0.3f, 0.3f, 1.0f);
 	m_light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_light->SetLookAt(0.0f, 0.0f, 0.0f);
+	m_light->SetLookAt(-9.0f, 0.0f, 0.0f);
+	m_light->SetPosition(9.0f, 8.0f, -5.0f);
 	m_light->GenerateOrthoMatrix(30.0f, SCREEN_DEPTH, SCREEN_NEAR);
-	m_light->SetPosition(0.0f, 8.0f, -5.0f);
+	m_light->GenerateDirectionalOrthoMatrix(30.0f, SHADOWMAP_DEPTH, SHADOWMAP_NEAR);
 	lightMovementSwitch = true;
 
 	// Create the cube object.
@@ -131,18 +134,33 @@ bool Graphics::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 
-	// Create render texture class.
-	m_renderTexture = new RenderTexture;
-	if (!m_renderTexture)
+	// Create render depth class.
+	m_renderDepth = new RenderTexture;
+	if (!m_renderDepth)
 	{
 		return false;
 	}
 
-	// Initialise the render texture class.
-	result = m_renderTexture->Initialize(m_D3D->GetDevice(), SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, SCREEN_DEPTH, SCREEN_NEAR);
+	// Initialize the render depth class.
+	result = m_renderDepth->Initialize(m_D3D->GetDevice(), SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, SCREEN_DEPTH, SCREEN_NEAR);
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the render texture class.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the render depth class.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Create render directional light depth class.
+	m_renderDirectionalDepth = new RenderTexture;
+	if (!m_renderDirectionalDepth)
+	{
+		return false;
+	}
+
+	// Initialize the render directional light depth class.
+	result = m_renderDirectionalDepth->Initialize(m_D3D->GetDevice(), SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, SHADOWMAP_DEPTH, SHADOWMAP_NEAR);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the render directional light depth class.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -158,6 +176,21 @@ bool Graphics::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int s
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the shadow render to texture object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Create the directional shadow render to texture object.
+	m_directionalShadowTexture = new RenderTexture;
+	if (!m_directionalShadowTexture)
+	{
+		return false;
+	}
+
+	// Initialize the directional shadow render to texture object.
+	result = m_directionalShadowTexture->Initialize(m_D3D->GetDevice(), SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, SHADOWMAP_DEPTH, SHADOWMAP_NEAR);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the directional shadow render to texture object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -308,12 +341,20 @@ void Graphics::Shutdown()
 		m_D3D = 0;
 	}
 
-	// Release the D3D object.
-	if (m_renderTexture)
+	// Release the render depth object.
+	if (m_renderDepth)
 	{
-		m_renderTexture->Shutdown();
-		delete m_renderTexture;
-		m_renderTexture = 0;
+		m_renderDepth->Shutdown();
+		delete m_renderDepth;
+		m_renderDepth = 0;
+	}
+
+	// Release the render directional light depth object.
+	if (m_renderDirectionalDepth)
+	{
+		m_renderDirectionalDepth->Shutdown();
+		delete m_renderDirectionalDepth;
+		m_renderDirectionalDepth = 0;
 	}
 
 	// Release the shadow texture object.
@@ -322,6 +363,14 @@ void Graphics::Shutdown()
 		m_shadowTexture->Shutdown();
 		delete m_shadowTexture;
 		m_shadowTexture = 0;
+	}
+
+	// Release the directional shadow texture object.
+	if (m_directionalShadowTexture)
+	{
+		m_directionalShadowTexture->Shutdown();
+		delete m_directionalShadowTexture;
+		m_directionalShadowTexture = 0;
 	}
 
 	// Release the horizontal blur texture object.
@@ -376,7 +425,7 @@ void Graphics::Shutdown()
 }
 
 
-bool Graphics::Frame()
+bool Graphics::Frame(float frameTime)
 {
 	bool result;
 
@@ -385,7 +434,7 @@ bool Graphics::Frame()
 	// If the light movement is enabled then run the movement every frame.
 	if (m_playerController->LightMovement)
 	{
-		result = HandleLightMovement();
+		result = HandleLightMovement(frameTime);
 		if (!result)
 		{
 			return false;
@@ -402,7 +451,7 @@ bool Graphics::Frame()
 	return true;
 }
 
-bool Graphics::HandleLightMovement()
+bool Graphics::HandleLightMovement(float frameTime)
 {
 	XMFLOAT3 currentLightPos;
 
@@ -412,21 +461,22 @@ bool Graphics::HandleLightMovement()
 	// Update the position of the light each frame.
 	if (lightMovementSwitch)
 	{
-		currentLightPos.x += 0.02f;
+		currentLightPos.y += 0.02f;
 	}
 	else
 	{
-		currentLightPos.x -= 0.02f;
+		currentLightPos.y -= 0.02f;
 	}
 
 	// Flip the lights movement.
-	if (currentLightPos.x > 10.0f || currentLightPos.x < -10.0f)
+	if (currentLightPos.y > 15.0f || currentLightPos.y < 5.0f)
 	{
 		lightMovementSwitch = !lightMovementSwitch;
 	}
 
 	// Update the position of the light.
-	m_light->SetPosition(currentLightPos.x, currentLightPos.y, currentLightPos.z);
+	m_light->SetPosition(9.0, currentLightPos.y, currentLightPos.y);
+	m_light->SetLookAt(-9.0, -currentLightPos.y, 0.0f);
 
 	return true;
 }
@@ -437,12 +487,11 @@ bool Graphics::RenderTextures()
 	XMFLOAT3 pos;
 	bool result;
 
-
 	// Set the render target to be the render to texture.
-	m_renderTexture->SetRenderTarget(m_D3D->GetDeviceContext());
+	m_renderDepth->SetRenderTarget(m_D3D->GetDeviceContext());
 
 	// Clear the render to texture.
-	m_renderTexture->ClearRenderTarget(m_D3D->GetDeviceContext(), 0.0f, 0.0f, 0.0f, 1.0f);
+	m_renderDepth->ClearRenderTarget(m_D3D->GetDeviceContext(), 0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Generate the light view matrix based on the light's position.
 	m_light->GenerateViewMatrix();
@@ -493,14 +542,12 @@ bool Graphics::RenderTextures()
 	return true;
 }
 
-
-bool Graphics::RenderShadowTextures()
+bool Graphics::RenderPositionalShadowTextures()
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, translateMatrix;
 	XMMATRIX lightViewMatrix, lightProjectionMatrix;
 	XMFLOAT3 pos;
 	bool result;
-
 
 	// Set the render target to be the render to texture.
 	m_shadowTexture->SetRenderTarget(m_D3D->GetDeviceContext());
@@ -531,8 +578,8 @@ bool Graphics::RenderShadowTextures()
 
 	// Render the cube model using the shadow shader.
 	m_cube->Render(m_D3D->GetDeviceContext());
-	result = m_shaderManager->RenderShadowShader(m_D3D->GetDeviceContext(), m_cube->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix,
-		lightProjectionMatrix, m_renderTexture->GetShaderResourceView(), m_light->GetPosition());
+	result = m_shaderManager->RenderPositionalShadowShader(m_D3D->GetDeviceContext(), m_cube->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix,
+		lightProjectionMatrix, m_renderDepth->GetShaderResourceView(), m_light->GetPosition());
 	if (!result)
 	{
 		return false;
@@ -548,8 +595,8 @@ bool Graphics::RenderShadowTextures()
 
 	// Render the ground model using the shadow shader.
 	m_ground->Render(m_D3D->GetDeviceContext());
-	result = m_shaderManager->RenderShadowShader(m_D3D->GetDeviceContext(), m_ground->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix,
-		lightProjectionMatrix, m_renderTexture->GetShaderResourceView(), m_light->GetPosition());
+	result = m_shaderManager->RenderPositionalShadowShader(m_D3D->GetDeviceContext(), m_ground->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix,
+		lightProjectionMatrix, m_renderDepth->GetShaderResourceView(), m_light->GetPosition());
 	if (!result)
 	{
 		return false;
@@ -564,9 +611,141 @@ bool Graphics::RenderShadowTextures()
 	return true;
 }
 
+bool Graphics::RenderDirectionlShadowDepthTextures()
+{
+	XMMATRIX worldMatrix, lightViewMatrix, lightOrthoMatrix;
+	XMFLOAT3 pos;
+	bool result;
+
+	// Set the render target to be the render to texture.
+	m_renderDirectionalDepth->SetRenderTarget(m_D3D->GetDeviceContext());
+
+	// Clear the render to texture.
+	m_renderDirectionalDepth->ClearRenderTarget(m_D3D->GetDeviceContext(), 0.0f, 0.0f, 0.0f, 1.0f);
+
+	// Generate the light view matrix based on the light's position.
+	m_light->GenerateViewMatrix();
+
+	m_D3D->GetWorldMatrix(worldMatrix);
+
+	// Get the light's view and projection matrices from the light object.
+	m_light->GetViewMatrix(lightViewMatrix);
+	m_light->GetDirectionalOrthoMatrix(lightOrthoMatrix);
+
+	// Setup the translation matrix for the cube model.
+	m_cube->GetPosition(pos);
+	//worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(XM_PI / 6));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
+
+	// Render the cube model using the shadow shader.
+	m_cube->Render(m_D3D->GetDeviceContext());
+	result = m_shaderManager->RenderDepthShader(m_D3D->GetDeviceContext(), m_cube->GetIndexCount(), worldMatrix, lightViewMatrix, lightOrthoMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Reset the world matrix.
+	m_D3D->GetWorldMatrix(worldMatrix);
+
+	// Setup the translation matrix for the ground model.
+	m_ground->GetPosition(pos);
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(10.0f, 0.2f, 10.0f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
+
+	// Render the ground model using the shadow shader.
+	m_ground->Render(m_D3D->GetDeviceContext());
+	result = m_shaderManager->RenderDepthShader(m_D3D->GetDeviceContext(), m_cube->GetIndexCount(), worldMatrix, lightViewMatrix, lightOrthoMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Reset the render target back to the original back buffer and not the render to texture anymore.
+	m_D3D->SetBackBufferRenderTarget();
+
+	// Reset the viewport back to the original.
+	m_D3D->ResetViewport();
+
+	return true;
+}
+
+bool Graphics::RenderDirectionlShadowTextures()
+{
+	XMMATRIX viewMatrix, worldMatrix, projectionMatrix, lightViewMatrix, lightOrthoMatrix;
+	XMFLOAT3 pos;
+	bool result;
+
+	// Set the render target to be the render to texture.
+	m_directionalShadowTexture->SetRenderTarget(m_D3D->GetDeviceContext());
+
+	// Clear the render to texture.
+	m_directionalShadowTexture->ClearRenderTarget(m_D3D->GetDeviceContext(), 0.0f, 0.0f, 0.0f, 1.0f);
+
+	// Generate the view matrix based on the camera's position.
+	m_playerController->Render();
+
+	// Generate the light view matrix based on the light's position.
+	m_light->GenerateViewMatrix();
+
+	// Get the world, view, and projection matrices from the camera and d3d objects.
+	m_playerController->GetCameraViewMatrix(viewMatrix);
+	m_D3D->GetWorldMatrix(worldMatrix);
+	m_D3D->GetProjectionMatrix(projectionMatrix);
+
+	// Get the light's view and projection matrices from the light object.
+	m_light->GetViewMatrix(lightViewMatrix);
+	m_light->GetDirectionalOrthoMatrix(lightOrthoMatrix);
+
+	// Setup the translation matrix for the cube model.
+	m_cube->GetPosition(pos);
+	//worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(XM_PI / 6));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
+
+	// Render the cube model using the shadow shader.
+	m_cube->Render(m_D3D->GetDeviceContext());
+	result = m_shaderManager->RenderDirectionalShadowShader(m_D3D->GetDeviceContext(), m_cube->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix,
+		lightOrthoMatrix, m_cube->GetTexture(), m_renderDirectionalDepth->GetShaderResourceView(), m_light->GetDirection(),
+		m_light->GetAmbientColor(), m_light->GetDiffuseColor());
+	if (!result)
+	{
+		return false;
+	}
+
+	// Reset the world matrix.
+	m_D3D->GetWorldMatrix(worldMatrix);
+
+	// Setup the translation matrix for the ground model.
+	m_ground->GetPosition(pos);
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(10.0f, 0.2f, 10.0f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
+
+	// Render the ground model using the shadow shader.
+	m_ground->Render(m_D3D->GetDeviceContext());
+	result = m_shaderManager->RenderDirectionalShadowShader(m_D3D->GetDeviceContext(), m_ground->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix,
+		lightOrthoMatrix, m_ground->GetTexture(), m_renderDirectionalDepth->GetShaderResourceView(), m_light->GetDirection(),
+		m_light->GetAmbientColor(), m_light->GetDiffuseColor());
+	if (!result)
+	{
+		return false;
+	}
+
+	// Reset the render target back to the original back buffer and not the render to texture anymore.
+	m_D3D->SetBackBufferRenderTarget();
+
+	// Reset the viewport back to the original.
+	m_D3D->ResetViewport();
+
+	return true;
+}
+
+
 bool Graphics::Render()
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, translateMatrix;
+	XMMATRIX lightViewMatrix, lightOrthoMatrix;
 	XMFLOAT3 pos;
 	bool result;
 
@@ -577,14 +756,33 @@ bool Graphics::Render()
 		return false;
 	}
 
-	// Then render the scenes shadow map.
-	result = RenderShadowTextures();
+	// Then render the scene to a positional shadow map.
+	result = RenderPositionalShadowTextures();
 	if (!result)
 	{
 		return false;
 	}
 
-	ID3D11ShaderResourceView* blurredShadows = RenderBlurredShadows(m_shadowTexture->GetShaderResourceView(), m_upSampleTexture);
+	// Then render the scene to a directional shadow map.
+	result = RenderDirectionlShadowDepthTextures();
+	if (!result)
+	{
+		return false;
+	}
+
+	// Then render the scene to a directional shadow map.
+	result = RenderDirectionlShadowTextures();
+	if (!result)
+	{
+		return false;
+	}
+
+	// Perform a 4 pass render to blur the shadow map passed in to the output render texture class.
+	result = RenderBlurredShadows(m_directionalShadowTexture->GetShaderResourceView(), m_upSampleTexture);
+	if (!result)
+	{
+		return false;
+	}
 
 	// Clear the buffers to begin the scene.
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
@@ -608,7 +806,7 @@ bool Graphics::Render()
 
 	// Render the model using the shadow shader.
 	result = m_shaderManager->RenderSoftShadowShader(m_D3D->GetDeviceContext(), m_cube->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_cube->GetTexture(),
-		blurredShadows, m_light->GetPosition(), m_light->GetAmbientColor(), m_light->GetDiffuseColor());
+		m_upSampleTexture->GetShaderResourceView(), m_light->GetPosition(), m_light->GetAmbientColor(), m_light->GetDiffuseColor());
 	if (!result)
 	{
 		return false;
@@ -627,7 +825,7 @@ bool Graphics::Render()
 
 	// Render the model using the shadow shader.
 	result = m_shaderManager->RenderSoftShadowShader(m_D3D->GetDeviceContext(), m_ground->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_ground->GetTexture(),
-		blurredShadows, m_light->GetPosition(), m_light->GetAmbientColor(), m_light->GetDiffuseColor());
+		m_upSampleTexture->GetShaderResourceView(), m_light->GetPosition(), m_light->GetAmbientColor(), m_light->GetDiffuseColor());
 	if (!result)
 	{
 		return false;
@@ -639,7 +837,7 @@ bool Graphics::Render()
 	return true;
 }
 
-ID3D11ShaderResourceView* Graphics::RenderBlurredShadows(ID3D11ShaderResourceView* viewToBlur, RenderTexture* outputRenderTarget)
+bool Graphics::RenderBlurredShadows(ID3D11ShaderResourceView* viewToBlur, RenderTexture* outputRenderTarget)
 {
 	XMMATRIX worldMatrix, baseViewMatrix, orthoMatrix;
 
@@ -649,30 +847,30 @@ ID3D11ShaderResourceView* Graphics::RenderBlurredShadows(ID3D11ShaderResourceVie
 	m_D3D->GetWorldMatrix(worldMatrix);
 	m_playerController->GetBaseCameraViewMatrix(baseViewMatrix);
 
-	// Tex 1
+	// Pass 1
 	m_downSampleTexture->SetRenderTarget(m_D3D->GetDeviceContext());
-	m_downSampleTexture->ClearRenderTarget(m_D3D->GetDeviceContext(), 0.0f, 0.0f, 0.0f, 1.0f); // REALLY UNNECESSARY???
+	m_downSampleTexture->ClearRenderTarget(m_D3D->GetDeviceContext(), 0.0f, 0.0f, 0.0f, 1.0f);
 	m_downSampleTexture->GetOrthoMatrix(orthoMatrix);
 	m_smallWindow->Render(m_D3D->GetDeviceContext());
 	result = m_shaderManager->RenderTextureShader(m_D3D->GetDeviceContext(), m_smallWindow->GetIndexCount(), worldMatrix, baseViewMatrix, orthoMatrix, viewToBlur);
 
-	// Tex 2
+	// Pass 2
 	m_horizontalBlurTexture->SetRenderTarget(m_D3D->GetDeviceContext());
 	m_horizontalBlurTexture->GetOrthoMatrix(orthoMatrix);
 	m_smallWindow->Render(m_D3D->GetDeviceContext());
 	result = m_shaderManager->RenderHorizontalBlurShader(m_D3D->GetDeviceContext(), m_smallWindow->GetIndexCount(), worldMatrix, baseViewMatrix, orthoMatrix,
 		m_downSampleTexture->GetShaderResourceView(), (float)(SHADOWMAP_WIDTH * 0.5f));
 
-	// Tex 3
+	// Pass 3
 	m_verticalBlurTexture->SetRenderTarget(m_D3D->GetDeviceContext());
 	m_verticalBlurTexture->GetOrthoMatrix(orthoMatrix);
 	m_smallWindow->Render(m_D3D->GetDeviceContext());
 	result = m_shaderManager->RenderVerticalBlurShader(m_D3D->GetDeviceContext(), m_smallWindow->GetIndexCount(), worldMatrix, baseViewMatrix, orthoMatrix,
 		m_horizontalBlurTexture->GetShaderResourceView(), (float)(SHADOWMAP_HEIGHT * 0.5f));
 
-	// Tex 4
-	/*m_UpSampleTexure*/outputRenderTarget->SetRenderTarget(m_D3D->GetDeviceContext());
-	/*m_UpSampleTexure*/outputRenderTarget->GetOrthoMatrix(orthoMatrix);
+	// Pass 4
+	outputRenderTarget->SetRenderTarget(m_D3D->GetDeviceContext());
+	outputRenderTarget->GetOrthoMatrix(orthoMatrix);
 	m_fullWindow->Render(m_D3D->GetDeviceContext());
 	result = m_shaderManager->RenderTextureShader(m_D3D->GetDeviceContext(), m_fullWindow->GetIndexCount(), worldMatrix, baseViewMatrix, orthoMatrix,
 		m_verticalBlurTexture->GetShaderResourceView());
@@ -681,6 +879,5 @@ ID3D11ShaderResourceView* Graphics::RenderBlurredShadows(ID3D11ShaderResourceVie
 	m_D3D->SetBackBufferRenderTarget();
 	m_D3D->ResetViewport();
 
-	return outputRenderTarget->GetShaderResourceView();
-	//return true;
+	return true;
 }

@@ -3,7 +3,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "Light.h"
 
-
 Light::Light()
 {
 }
@@ -119,4 +118,31 @@ void Light::GetProjectionMatrix(XMMATRIX& projectionMatrix)
 {
 	projectionMatrix = m_projectionMatrix;
 	return;
+}
+
+
+void Light::GenerateDirectionalOrthoMatrix(float width, float depthPlane, float nearPlane)
+{
+	// Create the orthographic matrix for the light.
+	m_orthoMatrix = XMMatrixOrthographicLH(width, width, nearPlane, depthPlane);
+
+	return;
+}
+
+
+void Light::GetDirectionalOrthoMatrix(XMMATRIX& orthoMatrix)
+{
+	orthoMatrix = m_orthoMatrix;
+	return;
+}
+
+void Light::SetDirection(float x, float y, float z)
+{
+	m_direction = XMFLOAT3(x, y, z);
+	return;
+}
+
+XMFLOAT3 Light::GetDirection()
+{
+	return m_direction;
 }

@@ -111,9 +111,6 @@
     <ClInclude Include="Timer.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="ShadowShader.h">
-      <Filter>Header Files\Graphics\Shader</Filter>
-    </ClInclude>
     <ClInclude Include="DepthShader.h">
       <Filter>Header Files\Graphics\Shader</Filter>
     </ClInclude>
@@ -131,6 +128,12 @@
     </ClInclude>
     <ClInclude Include="RenderWindow.h">
       <Filter>Header Files\Graphics\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="PositionalShadowShader.h">
+      <Filter>Header Files\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalShadowShader.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -194,9 +197,6 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="ShadowShader.cpp">
-      <Filter>Source Files\Graphics\Shader</Filter>
-    </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Source Files\Graphics\Models</Filter>
     </ClCompile>
@@ -217,6 +217,12 @@
     </ClCompile>
     <ClCompile Include="RenderWindow.cpp">
       <Filter>Source Files\Graphics\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="PositionalShadowShader.cpp">
+      <Filter>Source Files\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalShadowShader.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -257,16 +263,22 @@
     <None Include="light.vs">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="shadow.ps">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="shadow.vs">
-      <Filter>Shader Files</Filter>
-    </None>
     <None Include="softshadow.ps">
       <Filter>Shader Files</Filter>
     </None>
     <None Include="softshadow.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="positionalshadow.ps">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="positionalshadow.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="directionalshadow.ps">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="directionalshadow.vs">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>

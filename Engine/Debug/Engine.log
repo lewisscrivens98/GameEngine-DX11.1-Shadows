@@ -1,11 +1,13 @@
 ﻿  Graphics.cpp
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(41): warning C4316: 'DirectX11': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(71): warning C4316: 'Light': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(135): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(150): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(169): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(199): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(214): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(229): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(43): warning C4316: 'DirectX11': object allocated on the heap may not be aligned 16
+d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(73): warning C4316: 'Light': object allocated on the heap may not be aligned 16
+d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(138): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(153): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(168): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(183): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(202): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(232): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(247): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(262): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
   Engine.vcxproj -> D:\University\Temp Projects\GameEngine-DX11.1-Version2\Debug\Engine.exe
   Engine.vcxproj -> D:\University\Temp Projects\GameEngine-DX11.1-Version2\Debug\Engine.pdb (Full PDB)

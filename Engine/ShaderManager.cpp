@@ -8,7 +8,8 @@ ShaderManager::ShaderManager()
 	m_TextureShader = 0;
 	m_LightShader = 0;
 	m_BumpMapShader = 0;
-	m_ShadowShader = 0;
+	m_PositionalShadowShader = 0;
+	m_DirectionalShadowShader = 0;
 	m_SoftShadowShader = 0;
 	m_DepthShader = 0;
 }
@@ -74,17 +75,31 @@ bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 
-	m_ShadowShader = new ShadowShader;
-	if (!m_ShadowShader)
+	m_PositionalShadowShader = new PositionalShadowShader;
+	if (!m_PositionalShadowShader)
 	{
 		return false;
 	}
 
-	// Initialize the Shadow shader object.
-	result = m_ShadowShader->Initialize(device, hwnd);
+	// Initialize the positional Shadow shader object.
+	result = m_PositionalShadowShader->Initialize(device, hwnd);
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the shadow shader object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the positional shadow shader object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_DirectionalShadowShader = new DirectionalShadowShader;
+	if (!m_DirectionalShadowShader)
+	{
+		return false;
+	}
+
+	// Initialize the directional Shadow shader object.
+	result = m_DirectionalShadowShader->Initialize(device, hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the directional shadow shader object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -174,12 +189,20 @@ void ShaderManager::Shutdown()
 		m_TextureShader = 0;
 	}
 
-	// Release the shadow shader object.
-	if (m_ShadowShader)
+	// Release the positional shadow shader object.
+	if (m_PositionalShadowShader)
 	{
-		m_ShadowShader->Shutdown();
-		delete m_ShadowShader;
-		m_ShadowShader = 0;
+		m_PositionalShadowShader->Shutdown();
+		delete m_PositionalShadowShader;
+		m_PositionalShadowShader = 0;
+	}
+
+	// Release the directional shadow shader object.
+	if (m_DirectionalShadowShader)
+	{
+		m_DirectionalShadowShader->Shutdown();
+		delete m_DirectionalShadowShader;
+		m_DirectionalShadowShader = 0;
 	}
 
 	// Release the soft shadow shader object.
@@ -260,7 +283,6 @@ bool ShaderManager::RenderBumpMapShader(ID3D11DeviceContext* deviceContext, int 
 {
 	bool result;
 
-
 	// Render the model using the bump map shader.
 	result = m_BumpMapShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, colorTexture, normalTexture, lightDirection, diffuse);
 	if(!result)
@@ -271,7 +293,7 @@ bool ShaderManager::RenderBumpMapShader(ID3D11DeviceContext* deviceContext, int 
 	return true;
 }
 
-bool ShaderManager::RenderShadowShader(ID3D11DeviceContext* deviceContext, int indexCount, const XMMATRIX& worldMatrix,
+bool ShaderManager::RenderPositionalShadowShader(ID3D11DeviceContext* deviceContext, int indexCount, const XMMATRIX& worldMatrix,
 		const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix, const XMMATRIX& lightViewMatrix, 
 		const XMMATRIX& lightProjectionMatrix, ID3D11ShaderResourceView* depthMapTexture, 
 XMFLOAT3 lightPosition)
@@ -280,8 +302,26 @@ XMFLOAT3 lightPosition)
 
 
 	// Render the model using the shadow shader.
-	result = m_ShadowShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, 
+	result = m_PositionalShadowShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix,
 		lightProjectionMatrix, depthMapTexture, lightPosition);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManager::RenderDirectionalShadowShader(ID3D11DeviceContext* deviceContext, int indexCount, const XMMATRIX& worldMatrix, const XMMATRIX& viewMatrix,
+	const XMMATRIX& projectionMatrix, const XMMATRIX& lightViewMatrix, const XMMATRIX& lightProjectionMatrix,
+	ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture, XMFLOAT3 lightDirection,
+	XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor)
+{
+	bool result;
+
+	// Render the model using the directional shadow shader.
+	result = m_DirectionalShadowShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, texture,
+		depthMapTexture, lightDirection, ambientColor, diffuseColor);
 	if (!result)
 	{
 		return false;

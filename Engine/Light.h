@@ -38,6 +38,13 @@ public:
 	void GetViewMatrix(XMMATRIX&);
 	void GetProjectionMatrix(XMMATRIX&);
 
+	// Code for using this light in directional light shaders.
+	void GenerateDirectionalOrthoMatrix(float, float, float);
+	void GetDirectionalOrthoMatrix(XMMATRIX&);
+
+	void SetDirection(float, float, float);
+	XMFLOAT3 GetDirection();
+
 
 private:
 	XMFLOAT4 m_ambientColor;
@@ -46,6 +53,8 @@ private:
 	XMFLOAT3 m_lookAt;
 	XMMATRIX m_viewMatrix;
 	XMMATRIX m_projectionMatrix;
+	XMMATRIX m_orthoMatrix;
+	XMFLOAT3 m_direction;
 };
 
 #endif

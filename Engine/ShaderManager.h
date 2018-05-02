@@ -12,7 +12,8 @@
 #include "TextureShader.h"
 #include "LightShader.h"
 #include "BumpmapShader.h"
-#include "ShadowShader.h"
+#include "PositionalShadowShader.h"
+#include "DirectionalShadowShader.h"
 #include "SoftShadowShader.h"
 #include "DepthShader.h"
 #include "HorizontalBlurShader.h"
@@ -40,8 +41,10 @@ public:
 	bool RenderBumpMapShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*,
 		ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4);
 
-	bool RenderShadowShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&,
+	bool RenderPositionalShadowShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&,
 		ID3D11ShaderResourceView*, XMFLOAT3);
+
+	bool RenderDirectionalShadowShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*, ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4, XMFLOAT4);
 
 	bool RenderSoftShadowShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*, ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4, XMFLOAT4);
 
@@ -55,7 +58,8 @@ private:
 	TextureShader* m_TextureShader;
 	LightShader* m_LightShader;
 	BumpmapShader* m_BumpMapShader;
-	ShadowShader* m_ShadowShader;
+	PositionalShadowShader* m_PositionalShadowShader;
+	DirectionalShadowShader* m_DirectionalShadowShader;
 	SoftShadowShader* m_SoftShadowShader;
 	DepthShader* m_DepthShader;
 	HorizontalBlurShader* m_HorizontalBlurShader;

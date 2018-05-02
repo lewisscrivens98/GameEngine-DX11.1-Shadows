@@ -23,6 +23,7 @@
     <ClInclude Include="BumpModel.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DepthShader.h" />
+    <ClInclude Include="DirectionalShadowShader.h" />
     <ClInclude Include="DirectX11.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Font.h" />
@@ -38,7 +39,7 @@
     <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="RenderWindow.h" />
     <ClInclude Include="ShaderManager.h" />
-    <ClInclude Include="ShadowShader.h" />
+    <ClInclude Include="PositionalShadowShader.h" />
     <ClInclude Include="SoftShadowShader.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Text.h" />
@@ -52,6 +53,7 @@
     <ClCompile Include="BumpModel.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DepthShader.cpp" />
+    <ClCompile Include="DirectionalShadowShader.cpp" />
     <ClCompile Include="DirectX11.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Font.cpp" />
@@ -68,7 +70,7 @@
     <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="RenderWindow.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
-    <ClCompile Include="ShadowShader.cpp" />
+    <ClCompile Include="PositionalShadowShader.cpp" />
     <ClCompile Include="SoftShadowShader.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="Text.cpp" />
@@ -83,12 +85,14 @@
     <None Include="ClassDiagram.cd" />
     <None Include="depth.ps" />
     <None Include="depth.vs" />
+    <None Include="directionalshadow.ps" />
+    <None Include="directionalshadow.vs" />
     <None Include="horizontalblur.ps" />
     <None Include="horizontalblur.vs" />
     <None Include="light.ps" />
     <None Include="light.vs" />
-    <None Include="shadow.ps" />
-    <None Include="shadow.vs" />
+    <None Include="positionalshadow.ps" />
+    <None Include="positionalshadow.vs" />
     <None Include="softshadow.ps" />
     <None Include="softshadow.vs" />
     <None Include="texture.ps" />

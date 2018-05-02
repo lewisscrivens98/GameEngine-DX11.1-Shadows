@@ -8,6 +8,11 @@ const float SCREEN_NEAR = 1.0f;
 const int SHADOWMAP_WIDTH = 2048;
 const int SHADOWMAP_HEIGHT = 2048;
 
+// Directional shadow map values.
+const float SHADOWMAP_DEPTH = 50.0f;
+const float SHADOWMAP_NEAR = 1.0f;
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: Graphics.h
 ////////////////////////////////////////////////////////////////////////////////
@@ -39,21 +44,18 @@ public:
 
 	bool Initialize(HINSTANCE, HWND, int, int);
 	void Shutdown();
-	bool Frame();
+	bool Frame(float);
 
 private:
 
-	bool HandleLightMovement();
+	bool HandleLightMovement(float);
 	bool Render();
 	bool RenderTextures();
-	ID3D11ShaderResourceView* RenderBlurredShadows(ID3D11ShaderResourceView*, RenderTexture*);
+	bool RenderBlurredShadows(ID3D11ShaderResourceView*, RenderTexture*);
 
-	// 5 more passes to blur the shadow texture map before final render.
-	bool RenderShadowTextures();
-	bool RenderDownSampledTextures();
-	bool RenderHorizontalBlurTextures();
-	bool RenderVerticalBlurTextures();
-	bool RenderUpSampledTextures();
+	bool RenderPositionalShadowTextures();
+	bool RenderDirectionlShadowDepthTextures();
+	bool RenderDirectionlShadowTextures();
 
 private:
 
@@ -63,7 +65,7 @@ private:
 	Model* m_cube;
 	Model* m_ground;
 	PlayerController* m_playerController;
-	RenderTexture *m_renderTexture, *m_shadowTexture, *m_downSampleTexture,
+	RenderTexture *m_renderDepth, *m_renderDirectionalDepth, *m_shadowTexture, *m_directionalShadowTexture, *m_downSampleTexture,
 		*m_upSampleTexture, *m_horizontalBlurTexture, *m_verticalBlurTexture;
 	RenderWindow *m_smallWindow, *m_fullWindow;
 	

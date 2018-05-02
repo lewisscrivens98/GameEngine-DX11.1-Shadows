@@ -8,6 +8,7 @@ System::System()
 {
 	m_Input = 0;
 	m_Graphics = 0;
+	m_Timer = 0;
 }
 
 
@@ -57,6 +58,18 @@ bool System::Initialize()
 		return false;
 	}
 
+	m_Timer = new Timer;
+	if (!m_Timer)
+	{
+		return false;
+	}
+
+	result = m_Timer->Initialize();
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -76,6 +89,12 @@ void System::Shutdown()
 	{
 		delete m_Input;
 		m_Input = 0;
+	}
+
+	if (m_Timer)
+	{
+		delete m_Timer;
+		m_Timer = 0;
 	}
 
 	// Shutdown the window.
@@ -144,7 +163,7 @@ bool System::Frame()
 	}
 
 	// Do the frame processing for the graphics object.
-	result = m_Graphics->Frame();
+	result = m_Graphics->Frame(m_Timer->GetTime());
 	if (!result)
 	{
 		return false;
