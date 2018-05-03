@@ -12,7 +12,7 @@ d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\playercontro
 d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\rendertexture.obj
 d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\renderwindow.obj
 d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\shadermanager.obj
-d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\shadowshader.obj
+d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\positionalshadowshader.obj
 d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\softshadowshader.obj
 d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\system.obj
 d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\text.obj
@@ -24,12 +24,11 @@ d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\bumpmapshade
 d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\bumpmodel.obj
 d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\camera.obj
 d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\depthshader.obj
+d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\directionalshadowshader.obj
 d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\directx11.obj
 d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\ddstextureloader.obj
 d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\font.obj
 d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\graphics.obj
-d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\positionalshadowshader.obj
-d:\university\temp projects\gameengine-dx11.1-version2\engine\debug\directionalshadowshader.obj
 d:\university\temp projects\gameengine-dx11.1-version2\debug\engine.ilk
 d:\university\temp projects\gameengine-dx11.1-version2\debug\engine.exe
 d:\university\temp projects\gameengine-dx11.1-version2\debug\engine.pdb

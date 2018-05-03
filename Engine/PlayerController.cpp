@@ -24,7 +24,10 @@ bool PlayerController::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 {
 	bool result;
 
-	LightMovement = true;
+	LightMovement = false;
+	smoothShadows = true;
+	showShadowmap = false;
+	rotate = false;
 
 	// Create the camera object.
 	m_camera = new Camera;
@@ -175,6 +178,7 @@ bool PlayerController::HandleMovement(float frameTime)
 		m_input->KeyPressedTrigger(key);
 	}
 
+	// Toggle light movement.
 	key = DIK_M;
 	keyDown = m_input->IsKeyDown(key);
 	keyPressed = m_input->m_keyPressed[key];
@@ -188,7 +192,49 @@ bool PlayerController::HandleMovement(float frameTime)
 		m_input->KeyPressedTrigger(key);
 	}
 
-	// Run the poisition method moveMouse and pass in variables from the input class.
+	// Toggle smooth shadows.
+	key = DIK_K;
+	keyDown = m_input->IsKeyDown(key);
+	keyPressed = m_input->m_keyPressed[key];
+	if (keyDown && !keyPressed)// First Key press
+	{
+		smoothShadows = !smoothShadows;
+		m_input->KeyPressedTrigger(key);
+	}
+	else if (!keyDown && keyPressed)// KeyRelease
+	{
+		m_input->KeyPressedTrigger(key);
+	}
+
+	// Toggle shadow map.
+	key = DIK_O;
+	keyDown = m_input->IsKeyDown(key);
+	keyPressed = m_input->m_keyPressed[key];
+	if (keyDown && !keyPressed)// First Key press
+	{
+		showShadowmap = !showShadowmap;
+		m_input->KeyPressedTrigger(key);
+	}
+	else if (!keyDown && keyPressed)// KeyRelease
+	{
+		m_input->KeyPressedTrigger(key);
+	}
+
+	// Toggle cube rotation map.
+	key = DIK_R;
+	keyDown = m_input->IsKeyDown(key);
+	keyPressed = m_input->m_keyPressed[key];
+	if (keyDown && !keyPressed)// First Key press
+	{
+		rotate = !rotate;
+		m_input->KeyPressedTrigger(key);
+	}
+	else if (!keyDown && keyPressed)// KeyRelease
+	{
+		m_input->KeyPressedTrigger(key);
+	}
+
+	// Run the position method moveMouse and pass in variables from the input class.
 	m_movement->MoveMouse(mouseChangeX, mouseChangeY, mouseSensitivity);
 
 	// Get the new view point position/rotation.

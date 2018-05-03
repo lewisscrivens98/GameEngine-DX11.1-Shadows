@@ -1,13 +1,16 @@
-﻿  Graphics.cpp
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(43): warning C4316: 'DirectX11': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(73): warning C4316: 'Light': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(138): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(153): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(168): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(183): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(202): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(232): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(247): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
-d:\university\temp projects\gameengine-dx11.1-version2\engine\graphics.cpp(262): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
-  Engine.vcxproj -> D:\University\Temp Projects\GameEngine-DX11.1-Version2\Debug\Engine.exe
-  Engine.vcxproj -> D:\University\Temp Projects\GameEngine-DX11.1-Version2\Debug\Engine.pdb (Full PDB)
+﻿  PlayerController.cpp
+f:\university files\year 2\computer games studio 2\term 2\assignment\gameengine-dx11.1-version2\engine\playercontroller.cpp(33): warning C4316: 'Camera': object allocated on the heap may not be aligned 16
+  Graphics.cpp
+f:\university files\year 2\computer games studio 2\term 2\assignment\gameengine-dx11.1-version2\engine\graphics.cpp(48): warning C4316: 'DirectX11': object allocated on the heap may not be aligned 16
+f:\university files\year 2\computer games studio 2\term 2\assignment\gameengine-dx11.1-version2\engine\graphics.cpp(78): warning C4316: 'Light': object allocated on the heap may not be aligned 16
+f:\university files\year 2\computer games studio 2\term 2\assignment\gameengine-dx11.1-version2\engine\graphics.cpp(109): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+f:\university files\year 2\computer games studio 2\term 2\assignment\gameengine-dx11.1-version2\engine\graphics.cpp(124): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+f:\university files\year 2\computer games studio 2\term 2\assignment\gameengine-dx11.1-version2\engine\graphics.cpp(139): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+f:\university files\year 2\computer games studio 2\term 2\assignment\gameengine-dx11.1-version2\engine\graphics.cpp(154): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+f:\university files\year 2\computer games studio 2\term 2\assignment\gameengine-dx11.1-version2\engine\graphics.cpp(173): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+f:\university files\year 2\computer games studio 2\term 2\assignment\gameengine-dx11.1-version2\engine\graphics.cpp(203): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+f:\university files\year 2\computer games studio 2\term 2\assignment\gameengine-dx11.1-version2\engine\graphics.cpp(218): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+f:\university files\year 2\computer games studio 2\term 2\assignment\gameengine-dx11.1-version2\engine\graphics.cpp(233): warning C4316: 'RenderTexture': object allocated on the heap may not be aligned 16
+  Generating Code...
+  Engine.vcxproj -> F:\University Files\Year 2\Computer Games Studio 2\Term 2\Assignment\GameEngine-DX11.1-Version2\Debug\Engine.exe
+  Engine.vcxproj -> F:\University Files\Year 2\Computer Games Studio 2\Term 2\Assignment\GameEngine-DX11.1-Version2\Debug\Engine.pdb (Full PDB)

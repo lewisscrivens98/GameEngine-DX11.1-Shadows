@@ -8,8 +8,6 @@ Graphics::Graphics()
 	m_D3D = 0;
 	m_shaderManager = 0;
 	m_light = 0;
-	m_cube = 0;
-	m_ground = 0;
 	m_playerController = 0;
 	m_renderDepth = 0;
 	m_renderDirectionalDepth = 0;
@@ -21,6 +19,11 @@ Graphics::Graphics()
 	m_upSampleTexture = 0;
 	m_smallWindow = 0;
 	m_fullWindow = 0;
+
+	// Models
+	m_cube = 0;
+	m_ground = 0;
+	m_skybox = 0;
 }
 
 
@@ -38,6 +41,8 @@ bool Graphics::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int s
 {
 	bool result;
 	int downSampleWidth, downSampleHeight;
+
+	cubeRotation = 0.0f;
 
 	// Create the Direct3D object.
 	m_D3D = new DirectX11;
@@ -79,45 +84,11 @@ bool Graphics::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int s
 	// Initialize the light object.
 	m_light->SetAmbientColor(0.3f, 0.3f, 0.3f, 1.0f);
 	m_light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_light->SetLookAt(-9.0f, 0.0f, 0.0f);
-	m_light->SetPosition(9.0f, 8.0f, -5.0f);
+	m_light->SetLookAt(-9.0f, 0.0f, -10.0f);
+	m_light->SetPosition(9.0f, 15.0f, 0.0f);
 	m_light->GenerateOrthoMatrix(30.0f, SCREEN_DEPTH, SCREEN_NEAR);
-	m_light->GenerateDirectionalOrthoMatrix(30.0f, SHADOWMAP_DEPTH, SHADOWMAP_NEAR);
+	m_light->GenerateDirectionalOrthoMatrix(40.0, SHADOWMAP_DEPTH, SHADOWMAP_NEAR);
 	lightMovementSwitch = true;
-
-	// Create the cube object.
-	m_cube = new Model;
-	if (!m_cube)
-	{
-		return false;
-	}
-
-	// Initialize the cube object.
-	result = m_cube->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/marble.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the cube object.", L"Error", MB_OK);
-		return false;
-	}
-
-	m_cube->SetPosition(0.0f, 0.5f, 0.0f);
-
-	// Create the ground object.
-	m_ground = new Model;
-	if (!m_ground)
-	{
-		return false;
-	}
-
-	// Initialize the ground object.
-	result = m_ground->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/metal.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the ground object.", L"Error", MB_OK);
-		return false;
-	}
-
-	m_ground->SetPosition(0.0f, -1.0f, 0.0f);
 
 	// Create player controller.
 	m_playerController = new PlayerController;
@@ -288,9 +259,71 @@ bool Graphics::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 
+	result = LoadModels(hwnd);
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
 }
 
+
+bool Graphics::LoadModels(HWND hwnd)
+{
+	bool result;
+
+	// Create the cube object.
+	m_cube = new Model;
+	if (!m_cube)
+	{
+		return false;
+	}
+
+	// Initialize the cube object.
+	result = m_cube->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/marble.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the cube object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_cube->SetPosition(0.0f, 0.5f, 0.0f);
+
+	// Create the ground object.
+	m_ground = new Model;
+	if (!m_ground)
+	{
+		return false;
+	}
+
+	// Initialize the ground object.
+	result = m_ground->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/grass.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the ground object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_ground->SetPosition(0.0f, -1.0f, 0.0f);
+
+	// Create the skybox object.
+	m_skybox = new Model;
+	if (!m_skybox)
+	{
+		return false;
+	}
+
+	// Initialize the skybox object.
+	result = m_skybox->Initialize(m_D3D->GetDevice(), "../Engine/data/Sphere.txt", L"../Engine/data/Skybox2.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the skybox object.", L"Error", MB_OK);
+		return false;
+	}
+
+	return true;
+}
 
 void Graphics::Shutdown()
 {
@@ -307,6 +340,13 @@ void Graphics::Shutdown()
 	{
 		m_ground->Shutdown();
 		delete m_ground;
+		m_ground = 0;
+	}
+
+	if (m_skybox)
+	{
+		m_skybox->Shutdown();
+		delete m_skybox;
 		m_ground = 0;
 	}
 
@@ -441,6 +481,12 @@ bool Graphics::Frame(float frameTime)
 		}
 	}
 
+	// If rotation trigger is enabled then increment the roation.
+	if (m_playerController->rotate)
+	{
+		cubeRotation += 0.01f;
+	}
+
 	// Render the graphics.
 	result = Render();
 	if (!result)
@@ -506,7 +552,7 @@ bool Graphics::RenderTextures()
 	// Setup the translation matrix for the cube model.
 	m_cube->GetPosition(pos);
 	//worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(XM_PI / 6));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(cubeRotation));
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
 
 	// Render the cube model with the depth shader.
@@ -573,7 +619,7 @@ bool Graphics::RenderPositionalShadowTextures()
 	// Setup the translation matrix for the cube model.
 	m_cube->GetPosition(pos);
 	//worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(XM_PI / 6));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(cubeRotation));
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
 
 	// Render the cube model using the shadow shader.
@@ -635,7 +681,7 @@ bool Graphics::RenderDirectionlShadowDepthTextures()
 	// Setup the translation matrix for the cube model.
 	m_cube->GetPosition(pos);
 	//worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(XM_PI / 6));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(cubeRotation));
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
 
 	// Render the cube model using the shadow shader.
@@ -701,7 +747,7 @@ bool Graphics::RenderDirectionlShadowTextures()
 	// Setup the translation matrix for the cube model.
 	m_cube->GetPosition(pos);
 	//worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(XM_PI / 6));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(cubeRotation));
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
 
 	// Render the cube model using the shadow shader.
@@ -740,7 +786,6 @@ bool Graphics::RenderDirectionlShadowTextures()
 
 	return true;
 }
-
 
 bool Graphics::Render()
 {
@@ -784,11 +829,27 @@ bool Graphics::Render()
 		return false;
 	}
 
+	// Allows in game switching between smooth and normal directional shadows.
+	ID3D11ShaderResourceView* shadows;
+
+	if (m_playerController->smoothShadows)
+	{
+		shadows = m_upSampleTexture->GetShaderResourceView();
+	}
+	else
+	{
+		shadows = m_directionalShadowTexture->GetShaderResourceView();
+	}
+
 	// Clear the buffers to begin the scene.
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-	// Generate the view matrix based on the camera's position.
+	// Render the skybox first.
 	m_playerController->Render();
+
+	// Get the light's view and projection matrices from the light object.
+	m_light->GetViewMatrix(lightViewMatrix);
+	m_light->GetDirectionalOrthoMatrix(lightOrthoMatrix);
 
 	// Get the world, view, and projection matrices from the camera and d3d objects.
 	m_D3D->GetWorldMatrix(worldMatrix);
@@ -796,17 +857,37 @@ bool Graphics::Render()
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 
 	// Setup the translation matrix for the cube model.
+	m_playerController->GetPlayerPosition(pos);
+	// Translate the sky dome to be centered around the camera position.
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(-10.0f, -10.0f, -10.0f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
+	// Render the sky dome using the sky dome shader.
+	m_skybox->Render(m_D3D->GetDeviceContext());
+	m_shaderManager->RenderTextureShader(m_D3D->GetDeviceContext(), m_skybox->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_skybox->GetTexture());
+
+	// Reset the world matrix.
+	m_D3D->GetWorldMatrix(worldMatrix);
+
+	// Setup the translation matrix for the cube model.
 	m_cube->GetPosition(pos);
 	//worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(XM_PI / 6));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(cubeRotation));
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(pos.x, pos.y, pos.z));
 
 	// Put the cube model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_cube->Render(m_D3D->GetDeviceContext());
 
 	// Render the model using the shadow shader.
-	result = m_shaderManager->RenderSoftShadowShader(m_D3D->GetDeviceContext(), m_cube->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_cube->GetTexture(),
-		m_upSampleTexture->GetShaderResourceView(), m_light->GetPosition(), m_light->GetAmbientColor(), m_light->GetDiffuseColor());
+	if (!m_playerController->showShadowmap)
+	{
+		result = m_shaderManager->RenderSoftShadowShader(m_D3D->GetDeviceContext(), m_cube->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_cube->GetTexture(),
+			shadows, m_light->GetPosition(), m_light->GetAmbientColor(), m_light->GetDiffuseColor());
+	}
+	else
+	{
+		result = m_shaderManager->RenderDirectionalShadowShader(m_D3D->GetDeviceContext(), m_cube->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightOrthoMatrix, m_cube->GetTexture(),
+			m_renderDirectionalDepth->GetShaderResourceView(), m_light->GetDirection(), m_light->GetAmbientColor(), m_light->GetDiffuseColor());
+	}
 	if (!result)
 	{
 		return false;
@@ -824,12 +905,23 @@ bool Graphics::Render()
 	m_ground->Render(m_D3D->GetDeviceContext());
 
 	// Render the model using the shadow shader.
-	result = m_shaderManager->RenderSoftShadowShader(m_D3D->GetDeviceContext(), m_ground->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_ground->GetTexture(),
-		m_upSampleTexture->GetShaderResourceView(), m_light->GetPosition(), m_light->GetAmbientColor(), m_light->GetDiffuseColor());
+	if (!m_playerController->showShadowmap)
+	{
+		result = m_shaderManager->RenderSoftShadowShader(m_D3D->GetDeviceContext(), m_ground->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_ground->GetTexture(),
+			shadows, m_light->GetPosition(), m_light->GetAmbientColor(), m_light->GetDiffuseColor());
+	}
+	else
+	{
+		result = m_shaderManager->RenderDirectionalShadowShader(m_D3D->GetDeviceContext(), m_ground->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightOrthoMatrix, m_ground->GetTexture(),
+			m_renderDirectionalDepth->GetShaderResourceView(), m_light->GetDirection(), m_light->GetAmbientColor(), m_light->GetDiffuseColor());
+	}
 	if (!result)
 	{
 		return false;
 	}
+
+	// Reset the world matrix for current model.
+	m_D3D->GetWorldMatrix(worldMatrix);
 
 	// Present the rendered scene to the screen.
 	m_D3D->EndScene();
@@ -841,40 +933,42 @@ bool Graphics::RenderBlurredShadows(ID3D11ShaderResourceView* viewToBlur, Render
 {
 	XMMATRIX worldMatrix, baseViewMatrix, orthoMatrix;
 
+	// Turn Z buffer off.
 	HRESULT result;
 	m_playerController->Render();
 	m_D3D->TurnZBufferOff();
 	m_D3D->GetWorldMatrix(worldMatrix);
 	m_playerController->GetBaseCameraViewMatrix(baseViewMatrix);
 
-	// Pass 1
+	// Rebnder the down sampled textures.
 	m_downSampleTexture->SetRenderTarget(m_D3D->GetDeviceContext());
 	m_downSampleTexture->ClearRenderTarget(m_D3D->GetDeviceContext(), 0.0f, 0.0f, 0.0f, 1.0f);
 	m_downSampleTexture->GetOrthoMatrix(orthoMatrix);
 	m_smallWindow->Render(m_D3D->GetDeviceContext());
 	result = m_shaderManager->RenderTextureShader(m_D3D->GetDeviceContext(), m_smallWindow->GetIndexCount(), worldMatrix, baseViewMatrix, orthoMatrix, viewToBlur);
 
-	// Pass 2
+	// Render the horizontal blur on the down sampled textures.
 	m_horizontalBlurTexture->SetRenderTarget(m_D3D->GetDeviceContext());
 	m_horizontalBlurTexture->GetOrthoMatrix(orthoMatrix);
 	m_smallWindow->Render(m_D3D->GetDeviceContext());
 	result = m_shaderManager->RenderHorizontalBlurShader(m_D3D->GetDeviceContext(), m_smallWindow->GetIndexCount(), worldMatrix, baseViewMatrix, orthoMatrix,
 		m_downSampleTexture->GetShaderResourceView(), (float)(SHADOWMAP_WIDTH * 0.5f));
 
-	// Pass 3
+	// Render the vertical blur
 	m_verticalBlurTexture->SetRenderTarget(m_D3D->GetDeviceContext());
 	m_verticalBlurTexture->GetOrthoMatrix(orthoMatrix);
 	m_smallWindow->Render(m_D3D->GetDeviceContext());
 	result = m_shaderManager->RenderVerticalBlurShader(m_D3D->GetDeviceContext(), m_smallWindow->GetIndexCount(), worldMatrix, baseViewMatrix, orthoMatrix,
 		m_horizontalBlurTexture->GetShaderResourceView(), (float)(SHADOWMAP_HEIGHT * 0.5f));
 
-	// Pass 4
+	// Render the final up sampled shadow map.
 	outputRenderTarget->SetRenderTarget(m_D3D->GetDeviceContext());
 	outputRenderTarget->GetOrthoMatrix(orthoMatrix);
 	m_fullWindow->Render(m_D3D->GetDeviceContext());
 	result = m_shaderManager->RenderTextureShader(m_D3D->GetDeviceContext(), m_fullWindow->GetIndexCount(), worldMatrix, baseViewMatrix, orthoMatrix,
 		m_verticalBlurTexture->GetShaderResourceView());
 
+	// enable z buffer once passes are complete and return to the rendering method.
 	m_D3D->TurnZBufferOn();
 	m_D3D->SetBackBufferRenderTarget();
 	m_D3D->ResetViewport();

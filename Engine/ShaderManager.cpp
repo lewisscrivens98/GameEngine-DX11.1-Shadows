@@ -12,6 +12,9 @@ ShaderManager::ShaderManager()
 	m_DirectionalShadowShader = 0;
 	m_SoftShadowShader = 0;
 	m_DepthShader = 0;
+	m_SkyboxShader = 0;
+	m_RefractionShader = 0;
+	m_WaterShader = 0;
 }
 
 
@@ -159,6 +162,48 @@ bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 
+	m_SkyboxShader = new SkyboxShader;
+	if (!m_SkyboxShader)
+	{
+		return false;
+	}
+
+	// Initialize the skybox shader object.
+	result = m_SkyboxShader->Initialize(device, hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the skybox shader object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_RefractionShader = new RefractionShader;
+	if (!m_RefractionShader)
+	{
+		return false;
+	}
+
+	// Initialize the refraction shader object.
+	result = m_RefractionShader->Initialize(device, hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the refraction shader object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_WaterShader = new WaterShader;
+	if (!m_WaterShader)
+	{
+		return false;
+	}
+
+	// Initialize the water shader object.
+	result = m_WaterShader->Initialize(device, hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the water shader object.", L"Error", MB_OK);
+		return false;
+	}
+
 	return true;
 }
 
@@ -235,6 +280,30 @@ void ShaderManager::Shutdown()
 		m_VerticalBlurShader->Shutdown();
 		delete m_VerticalBlurShader;
 		m_VerticalBlurShader = 0;
+	}
+
+	// Release the skybox shader object.
+	if (m_SkyboxShader)
+	{
+		m_SkyboxShader->Shutdown();
+		delete m_SkyboxShader;
+		m_SkyboxShader = 0;
+	}
+
+	// Release the refraction shader object.
+	if (m_RefractionShader)
+	{
+		m_RefractionShader->Shutdown();
+		delete m_RefractionShader;
+		m_RefractionShader = 0;
+	}
+
+	// Release the water shader object.
+	if (m_WaterShader)
+	{
+		m_WaterShader->Shutdown();
+		delete m_WaterShader;
+		m_WaterShader = 0;
 	}
 
 	return;
@@ -385,6 +454,59 @@ bool ShaderManager::RenderVerticalBlurShader(ID3D11DeviceContext* deviceContext,
 
 	// Render the model using the vertical blur shader.
 	result = m_VerticalBlurShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, screenHeight);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManager::RenderSkyboxShader(ID3D11DeviceContext* deviceContext, int indexCount, const XMMATRIX& worldMatrix, const XMMATRIX& viewMatrix,
+	const XMMATRIX& projectionMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor)
+{
+	bool result;
+
+
+	// Render the model using the skybox shader.
+	result = m_SkyboxShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, apexColor, centerColor);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManager::RenderRefractionShader(ID3D11DeviceContext* deviceContext, int indexCount, const XMMATRIX& worldMatrix,
+	const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix, ID3D11ShaderResourceView* texture,
+	XMFLOAT3 lightDirection, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor,
+	XMFLOAT4 clipPlane)
+{
+	bool result;
+
+
+	// Render the model using the refraction shader.
+	result = m_RefractionShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, lightDirection, ambientColor,
+		diffuseColor, clipPlane);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManager::RenderWaterShader(ID3D11DeviceContext* deviceContext, int indexCount, const XMMATRIX& worldMatrix, const XMMATRIX& viewMatrix,
+	const XMMATRIX& projectionMatrix, const XMMATRIX& reflectionMatrix,
+	ID3D11ShaderResourceView* reflectionTexture, ID3D11ShaderResourceView* refractionTexture,
+	ID3D11ShaderResourceView* normalTexture, float waterTranslation, float reflectRefractScale)
+{
+	bool result;
+
+	// Render the model using the refraction shader.
+	result = m_WaterShader->Render(deviceContext, indexCount,worldMatrix, viewMatrix, projectionMatrix, reflectionMatrix, reflectionTexture,
+		refractionTexture, normalTexture, waterTranslation, reflectRefractScale);
 	if (!result)
 	{
 		return false;

@@ -18,6 +18,9 @@
 #include "DepthShader.h"
 #include "HorizontalBlurShader.h"
 #include "VerticalBlurShader.h"
+#include "SkyboxShader.h"
+#include "RefractionShader.h"
+#include "WaterShader.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -54,6 +57,12 @@ public:
 	
 	bool RenderVerticalBlurShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*, float);
 
+	bool RenderSkyboxShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, XMFLOAT4, XMFLOAT4);
+
+	bool RenderRefractionShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4, XMFLOAT4, XMFLOAT4);
+
+	bool RenderWaterShader(ID3D11DeviceContext*, int, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&, ID3D11ShaderResourceView*, ID3D11ShaderResourceView*, ID3D11ShaderResourceView*, float, float);
+
 private:
 	TextureShader* m_TextureShader;
 	LightShader* m_LightShader;
@@ -64,6 +73,9 @@ private:
 	DepthShader* m_DepthShader;
 	HorizontalBlurShader* m_HorizontalBlurShader;
 	VerticalBlurShader* m_VerticalBlurShader;
+	SkyboxShader* m_SkyboxShader;
+	RefractionShader* m_RefractionShader;
+	WaterShader* m_WaterShader;
 };
 
 #endif

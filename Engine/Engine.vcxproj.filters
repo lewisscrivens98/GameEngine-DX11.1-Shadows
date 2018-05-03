@@ -132,8 +132,20 @@
     <ClInclude Include="PositionalShadowShader.h">
       <Filter>Header Files\Graphics\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="SkyboxShader.h">
+      <Filter>Header Files\Graphics\Shader</Filter>
+    </ClInclude>
     <ClInclude Include="DirectionalShadowShader.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files\Graphics\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="WaterShader.h">
+      <Filter>Header Files\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="RefractionShader.h">
+      <Filter>Header Files\Graphics\Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -222,7 +234,19 @@
       <Filter>Source Files\Graphics\Shader</Filter>
     </ClCompile>
     <ClCompile Include="DirectionalShadowShader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyboxShader.cpp">
+      <Filter>Source Files\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files\Graphics\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="RefractionShader.cpp">
+      <Filter>Source Files\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="WaterShader.cpp">
+      <Filter>Source Files\Graphics\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -279,6 +303,24 @@
       <Filter>Shader Files</Filter>
     </None>
     <None Include="directionalshadow.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="skybox.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="skybox.ps">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="water.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="water.ps">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="refraction.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="refraction.ps">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>
