@@ -1,15 +1,45 @@
-# GameEngine - DX11.1 - Version 2
+# GameEngine - DX11.1 - Shadows
 
 An improved DirectX 11.1 Game Engine from my second term assignment in Game Engine Architecture at The University of Huddersfield.
 
 ----------------------------------------------------------------------------------
 
-This engine will be an improvement on my first term game engine. I am going to be focusing on shader driven effects, particle effects, lighting and shadows.
+This engine will focus on shaders and lighting and the way the render pipeline works. In this specific assignment I have focused mainly on the way shadows are rendered in the game world.
 
-Some of the engine features I will include will be derived from the tutorials found here: http://www.rastertek.com
+Some of the code and HLSL files have been derived from the following tutorials. 
+http://rastertek.com/tutdx11.html
+
+Features:
+
+- Player controller now holds camera and input.
+- Omni-directional movement with mouse and keyboard.
+- Input improvements (key down and key release detection.)
+- Water shader, this didn't make it into the game but it is implemented.
+- Basic point light shadow shader.
+- Basic direction light shadow shader.
+- Blur function to perform 4 texture passes to blur the shadowmap before it is rendered in the soft shadow shader.
+- Soft shadow shader.
+- Skybox. (NOTE: Currently using inside out sphere with increased screen cutoff as I wanted to use a texture for the skybox.)
+
+----------------------------------------------------------------------------------
+
+Controls:
+
+- Camera Up: Mouse y-axis
+- Camera Right: Mouse x-axis
+- Forward: W
+- Back: S
+- Left: A
+- Right: D
+- Up: Space Bar
+- Down: Left Ctrl
+- Increase Camera Speed: Left Shift
+
+- Light movement toggle: M
+- Cube rotation toggle: R
+- Show shadow map toggle: O
+- Show smooth shadow: K
 
 ----------------------------------------------------------------------------------
 
 First term game engine: https://github.com/lewisscrivens98/GameEngine-DX11-Version1
-
-NOTE: This project is not completed and is still in development.
