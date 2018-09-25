@@ -4,7 +4,7 @@ An improved DirectX 11.1 Game Engine from my second term assignment in Game Engi
 
 ----------------------------------------------------------------------------------
 
-This engine will focus on shaders and lighting and the way the render pipeline works. In this specific assignment I have focused mainly on the way shadows are rendered in the game world.
+This engine will focus on shaders and lighting and the way the render pipeline works. In this specific assignment I have focused mainly on the way shadows are rendered in the game world. This was for my second year.
 
 Some of the code and HLSL files have been derived from the following tutorials. 
 http://rastertek.com/tutdx11.html
