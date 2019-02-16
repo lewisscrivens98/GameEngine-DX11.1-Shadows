@@ -14,10 +14,9 @@ Features:
 - Player controller now holds camera and input.
 - Omni-directional movement with mouse and keyboard.
 - Input improvements (key down and key release detection.)
-- Water shader, this didn't make it into the game but it is implemented.
 - Basic point light shadow shader.
 - Basic direction light shadow shader.
-- Blur function to perform 4 texture passes to blur the shadowmap before it is rendered in the soft shadow shader.
+- Blur function to perform 4 texture/shader passes to blur the shadowmap before it is rendered in the soft shadow shader.
 - Soft shadow shader.
 - Skybox. (NOTE: Currently using inside out sphere with increased screen cutoff as I wanted to use a texture for the skybox.)
 
