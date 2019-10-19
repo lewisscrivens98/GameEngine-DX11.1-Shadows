@@ -4,6 +4,8 @@ An improved DirectX 11.1 Game Engine from my second term assignment in Game Engi
 
 ----------------------------------------------------------------------------------
 
+[![Watch the video](https://img.youtube.com/vi/MggUhdpElBE/maxresdefault.jpg)](https://youtu.be/MggUhdpElBE)
+
 This engine will focus on shaders and lighting and the way the render pipeline works. In this specific assignment I have focused mainly on the way shadows are rendered in the game world. This was for my second year.
 
 Some of the code and HLSL files have been derived from the following tutorials. 
@@ -19,6 +21,11 @@ Features:
 - Blur function to perform 4 texture/shader passes to blur the shadowmap before it is rendered in the soft shadow shader.
 - Soft shadow shader.
 - Skybox. (NOTE: Currently using inside out sphere with increased screen cutoff as I wanted to use a texture for the skybox.)
+
+Known Issues:
+
+- Shadow Occlusion shader pass creates jaged errors on the edges around models.
+- Smooth Shader to blur the shadow both horrizontally and vertically are working but not using such a low-res shadow map.
 
 ----------------------------------------------------------------------------------
 
